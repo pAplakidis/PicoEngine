@@ -131,6 +131,12 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build -j$(nproc)
 ```
 
+Compile and build from terminal quick note:
+
+```bash
+cmake --build build/debug -j$(nproc) && ./build/debug/bin/LearnOpenGL
+```
+
 ---
 
 ## Build on Windows
