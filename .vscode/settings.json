@@ -1,0 +1,6 @@
+{
+  "cmake.configureEnvironment": {
+    "CC": "clang",
+    "CXX": "clang++"
+  }
+}
