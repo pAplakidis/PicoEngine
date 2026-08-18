@@ -47,6 +47,7 @@ namespace test
     m_Shader = std::make_unique<Shader>(CORE_RESOURCES_PATH "shaders/basic.vert.glsl", CORE_RESOURCES_PATH "shaders/basic.frag.glsl");
     m_Shader->Bind();
     m_Shader->SetUniform4f("u_Color", glm::vec4(0.8f, 0.3f, 0.8f, 1.0f));
+    m_Shader->SetUniform1i("u_UseTexture", 1);
 
     m_Texture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/gold-dollar.png");
     m_Shader->SetUniform1i("u_Texture", 0);
