@@ -44,7 +44,7 @@ namespace test
 
     m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
 
-    m_Shader = std::make_unique<Shader>(CORE_RESOURCES_PATH "shaders/Basic.shader");
+    m_Shader = std::make_unique<Shader>(CORE_RESOURCES_PATH "shaders/basic.vert.glsl", CORE_RESOURCES_PATH "shaders/basic.frag.glsl");
     m_Shader->Bind();
     m_Shader->SetUniform4f("u_Color", glm::vec4(0.8f, 0.3f, 0.8f, 1.0f));
 

@@ -7,11 +7,11 @@
 
 #include "Renderer.h"
 
-Shader::Shader(const std::string &filepath)
-    : m_FilePath(filepath), m_RendererID(0)
+Shader::Shader(const std::string &vertexFilePath, const std::string &fragmentFilePath)
 {
-  ShaderProgramSource source = ParseShader(filepath);
-  m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+  std::string vertexSource = ReadFile(vertexFilePath);
+  std::string fragmentSource = ReadFile(fragmentFilePath);
+  m_RendererID = CreateShader(vertexSource, fragmentSource);
 }
 
 Shader::~Shader()
@@ -19,49 +19,23 @@ Shader::~Shader()
   GLCall(glDeleteProgram(m_RendererID));
 }
 
-ShaderProgramSource Shader::ParseShader(const std::string &filepath)
+std::string Shader::ReadFile(const std::string &filepath)
 {
-  // NOTE: using modern C++ here BUT old-school C is faster (better for Game Engines)
   std::ifstream stream(filepath);
   if (!stream.is_open())
   {
     std::cout << "Failed to open shader file: " << filepath << std::endl;
-    return {};
+    return nullptr;
   }
 
-  enum class ShaderType
-  {
-    NONE = -1,
-    VERTEX = 0,
-    FRAGMENT = 1
-  };
-
+  std::stringstream ss;
   std::string line;
-  std::stringstream ss[2];
-  ShaderType type = ShaderType::NONE;
-
-  // check if we are reading vertex or fragment shader code
-  // append each line to the corresponding stringstream ([0]: vertex, [1]: fragment)
   while (getline(stream, line))
   {
-    if (line.find("#shader") != std::string::npos)
-    {
-      if (line.find("vertex") != std::string::npos)
-      {
-        type = ShaderType::VERTEX;
-      }
-      else if (line.find("fragment") != std::string::npos)
-      {
-        type = ShaderType::FRAGMENT;
-      }
-    }
-    else
-    {
-      ss[(int)type] << line << '\n';
-    }
+    ss << line << '\n';
   }
 
-  return {ss[0].str(), ss[1].str()};
+  return ss.str();
 }
 
 unsigned int Shader::CompileShader(unsigned int type, const std::string &source)
