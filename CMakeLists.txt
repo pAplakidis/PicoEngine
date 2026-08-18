@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(LearnOpenGL
+project(PicoEngine
   VERSION 0.1.0
   LANGUAGES C CXX
 )
@@ -37,6 +37,39 @@ endif()
 # Linux:
 #   resolves to the system OpenGL library.
 find_package(OpenGL REQUIRED)
+
+if(UNIX AND NOT APPLE)
+  find_package(X11 REQUIRED)
+endif()
+
+
+# ---------------------------------------------------------------------------
+# GLEW
+# ---------------------------------------------------------------------------
+
+add_library(glew STATIC
+  Dependencies/GLEW/src/glew.c
+)
+
+target_include_directories(glew PUBLIC
+  "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLEW/include"
+)
+
+target_compile_definitions(glew PUBLIC
+  GLEW_STATIC
+  GLEW_NO_GLU
+)
+
+target_link_libraries(glew PUBLIC
+  OpenGL::GL
+)
+
+if(UNIX AND NOT APPLE)
+  target_link_libraries(glew PUBLIC
+    X11::X11
+    ${CMAKE_DL_LIBS}
+  )
+endif()
 
 
 # ---------------------------------------------------------------------------
@@ -112,7 +145,6 @@ elseif(UNIX AND NOT APPLE)
   )
 
   # Dependencies required by our static X11 GLFW build.
-  find_package(X11 REQUIRED)
   find_package(Threads REQUIRED)
 
   target_link_libraries(glfw INTERFACE
@@ -129,20 +161,6 @@ else()
   )
 
 endif()
-
-
-# ---------------------------------------------------------------------------
-# GLAD
-# ---------------------------------------------------------------------------
-
-add_library(glad STATIC
-  Dependencies/GLAD/src/glad.c
-)
-
-target_include_directories(glad
-  PUBLIC
-    "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLAD/include"
-)
 
 
 # ---------------------------------------------------------------------------
@@ -186,10 +204,15 @@ target_compile_definitions(Core
     GLFW_INCLUDE_NONE
 )
 
+target_compile_definitions(Core
+  PRIVATE
+    IMGUI_IMPL_OPENGL_LOADER_CUSTOM
+)
+
 target_link_libraries(Core
   PUBLIC
     glfw
-    glad
+    glew
     OpenGL::GL
 )
 
@@ -202,6 +225,7 @@ file(GLOB_RECURSE APPLICATION_SOURCES
   CONFIGURE_DEPENDS
 
   "${CMAKE_CURRENT_SOURCE_DIR}/Application/src/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Application/src/tests/*.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/Application/src/*.c"
 )
 
@@ -209,17 +233,26 @@ file(GLOB_RECURSE APPLICATION_HEADERS
   CONFIGURE_DEPENDS
 
   "${CMAKE_CURRENT_SOURCE_DIR}/Application/src/*.h"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Application/src/tests/*.h"
   "${CMAKE_CURRENT_SOURCE_DIR}/Application/src/*.hpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Application/src/tests/*.hpp"
 )
 
-add_executable(LearnOpenGL
+add_executable(PicoEngine
   ${APPLICATION_SOURCES}
   ${APPLICATION_HEADERS}
 )
 
-target_link_libraries(LearnOpenGL
+target_link_libraries(PicoEngine
   PRIVATE
     Core
+)
+
+target_include_directories(PicoEngine
+  PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Application/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/src/vendor"
 )
 
 
@@ -236,7 +269,7 @@ target_link_libraries(LearnOpenGL
 #
 #   Shader shader(APPLICATION_RESOURCES_PATH "shaders/basic.shader");
 
-target_compile_definitions(LearnOpenGL
+target_compile_definitions(PicoEngine
   PRIVATE
 
     APPLICATION_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Application/res/"
@@ -255,7 +288,7 @@ if(MSVC)
     /permissive-
   )
 
-  target_compile_options(LearnOpenGL PRIVATE
+  target_compile_options(PicoEngine PRIVATE
     /W4
     /permissive-
   )
@@ -272,7 +305,7 @@ else()
     -Wpedantic
   )
 
-  target_compile_options(LearnOpenGL PRIVATE
+  target_compile_options(PicoEngine PRIVATE
     -Wall
     -Wextra
     -Wpedantic
@@ -294,14 +327,14 @@ source_group(
 )
 
 source_group(
-  TREE "${CMAKE_CURRENT_SOURCE_DIR}/Application/src"
+  TREE "${CMAKE_CURRENT_SOURCE_DIR}/Application"
   PREFIX "Application"
   FILES ${APPLICATION_SOURCES} ${APPLICATION_HEADERS}
 )
 
 # When opening the generated solution in Visual Studio,
-# make LearnOpenGL the default startup project.
+# make PicoEngine the default startup project.
 set_property(
   DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-  PROPERTY VS_STARTUP_PROJECT LearnOpenGL
+  PROPERTY VS_STARTUP_PROJECT PicoEngine
 )

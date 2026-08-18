@@ -1,6 +1,6 @@
-# LearnOpenGL Project
+# PicoEngine
 
-Cross-platform OpenGL project for **Ubuntu/Linux** and **Windows with Visual Studio**.
+A small OpenGL Game Engine.
 
 GLFW, GLAD, stb_image, and ImGui are included in the repository where applicable.
 
@@ -57,7 +57,7 @@ Clone the repository:
 
 ```bash
 git clone <repository-url>
-cd LearnOpenGL
+cd PicoEngine
 ```
 
 The expected dependency structure is:
@@ -112,7 +112,7 @@ cmake --build build -j$(nproc)
 Run:
 
 ```bash
-./build/bin/LearnOpenGL
+./build/bin/PicoEngine
 ```
 
 For a release build:
@@ -134,7 +134,7 @@ cmake --build build -j$(nproc)
 Compile and build from terminal quick note:
 
 ```bash
-cmake --build build/debug -j$(nproc) && ./build/debug/bin/LearnOpenGL
+cmake --build build/debug -j$(nproc) && ./build/debug/bin/PicoEngine
 ```
 
 ---
