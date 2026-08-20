@@ -29,6 +29,6 @@ namespace test
     std::unique_ptr<Shader> m_Shader;
 
     glm::mat4 m_Proj, m_View;
-    glm::vec3 m_Translation;
+    glm::vec3 m_TranslationQ0, m_TranslationQ1, m_TranslationT0;
   };
 }
