@@ -4,9 +4,10 @@
 
 #include "Test.h"
 
-#include <Core/src/VertexBuffer.h>
-#include <Core/src/VertexBufferLayout.h>
-#include <Core/src/Texture.h>
+#include "glm/glm.hpp"
+
+#include "Renderer/Renderer2D.h"
+#include "Texture.h"
 
 namespace test
 {
@@ -21,14 +22,13 @@ namespace test
     void OnImGuiRender() override;
 
   private:
-    std::unique_ptr<VertexArray> m_VAO;
-    std::unique_ptr<IndexBuffer> m_IndexBuffer;
-    std::unique_ptr<VertexBuffer> m_VertexBuffer;
-    std::unique_ptr<Shader> m_Shader;
+    std::unique_ptr<Renderer2D> m_Renderer2D;
     std::unique_ptr<Texture> m_Texture;
 
     glm::mat4 m_Proj;
     glm::mat4 m_View;
-    glm::vec3 m_TranslationA, m_TranslationB;
+
+    glm::vec3 m_TranslationA;
+    glm::vec3 m_TranslationB;
   };
 }

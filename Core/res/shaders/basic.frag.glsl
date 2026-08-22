@@ -12,10 +12,10 @@ uniform int u_UseTexture;
 
 void main()
 {
-    vec4 baseColor = vec4(1.0);
+    vec4 texColor = texture(u_Texture, v_TexCoord);
+    float useTexture = float(u_UseTexture);
 
-    if (u_UseTexture == 1)
-        baseColor = texture(u_Texture, v_TexCoord);
+    vec4 baseColor = mix(vec4(1.0), texColor, useTexture);
 
     color = baseColor * v_Color * u_Color;
 }

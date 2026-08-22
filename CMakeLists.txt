@@ -269,11 +269,14 @@ target_include_directories(PicoEngine
 #
 #   Shader shader(APPLICATION_RESOURCES_PATH "shaders/basic.shader");
 
+target_compile_definitions(Core
+  PUBLIC
+    CORE_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Core/res/"
+)
+
 target_compile_definitions(PicoEngine
   PRIVATE
-
     APPLICATION_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Application/res/"
-    CORE_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Core/res/"
 )
 
 

@@ -6,7 +6,6 @@
 #include <string>
 #include <sstream>
 
-#include <Core/src/Renderer.h>
 #include <Core/src/VertexBuffer.h>
 #include <Core/src/VertexBufferLayout.h>
 #include <Core/src/IndexBuffer.h>
@@ -80,8 +79,6 @@ int main(void)
         unsigned int vao;
         GLCall(glGenVertexArrays(1, &vao));
 
-        Renderer renderer;
-
         ImGui::CreateContext();
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 330 core");
@@ -101,7 +98,7 @@ int main(void)
             processInput(window);
 
             GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-            renderer.Clear();
+            GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
