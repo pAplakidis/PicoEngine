@@ -20,11 +20,6 @@ namespace test
               1.0f)),
           m_View(glm::mat4(1.0f))
     {
-        GLCall(glEnable(GL_BLEND));
-        GLCall(glBlendFunc(
-            GL_SRC_ALPHA,
-            GL_ONE_MINUS_SRC_ALPHA));
-
         m_Renderer2D =
             std::make_unique<Renderer2D>();
 

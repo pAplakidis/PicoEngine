@@ -75,9 +75,6 @@ int main(void)
     std::cout << "GLSL: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     {
-        GLCall(glEnable(GL_BLEND));
-        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
         unsigned int vao;
         GLCall(glGenVertexArrays(1, &vao));
 
