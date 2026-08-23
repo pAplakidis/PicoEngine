@@ -25,7 +25,7 @@ std::string Shader::ReadFile(const std::string &filepath)
   if (!stream.is_open())
   {
     std::cout << "Failed to open shader file: " << filepath << std::endl;
-    return nullptr;
+    return {};
   }
 
   std::stringstream ss;
@@ -131,6 +131,13 @@ void Shader::SetUniform1i(const std::string &name, int value)
   GLCall(glUniform1i(GetUniformLocation(m_RendererID, name), value));
 }
 
+void Shader::SetUniform1iv(const std::string &name, int count, const int *values)
+{
+  if (m_RendererID == 0)
+    return;
+  GLCall(glUniform1iv(GetUniformLocation(m_RendererID, name), count, values));
+}
+
 void Shader::SetUniform1f(const std::string &name, float value)
 {
   if (m_RendererID == 0)
@@ -164,7 +171,7 @@ void Shader::SetUniformMat3f(const std::string &name, const glm::mat3 &matrix)
   if (m_RendererID == 0)
     return;
 
-  GLCall(glUniformMatrix4fv(GetUniformLocation(m_RendererID, name), 1, GL_FALSE, &matrix[0][0]));
+  GLCall(glUniformMatrix3fv(GetUniformLocation(m_RendererID, name), 1, GL_FALSE, &matrix[0][0]));
 }
 
 void Shader::SetUniformMat4f(const std::string &name, const glm::mat4 &matrix)
