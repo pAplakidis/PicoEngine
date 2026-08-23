@@ -1,5 +1,4 @@
 TODO
-- Replace all Renderer with Renderer2D
 - Logger
 - Replace GLCall with glEnableDebug() or something
 - Wireframe mode
@@ -10,3 +9,4 @@ TODO
 - Proper resizing
 
 - Batch Rendering (DONE)
+- Replace all Renderer with Renderer2D (DONE)

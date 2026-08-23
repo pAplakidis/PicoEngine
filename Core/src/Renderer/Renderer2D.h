@@ -25,6 +25,8 @@ public:
   void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Texture &texture);
   void DrawTriangle(const glm::vec2 &position, float size, const Vec4 &color);
 
+  static constexpr uint32_t GetMaxQuads() { return MaxQuads; }
+
 private:
   void Flush();
   float GetTextureIndex(const Texture &texture);
