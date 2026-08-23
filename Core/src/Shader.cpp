@@ -4,8 +4,9 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <GL/glew.h>
 
-#include "Renderer.h"
+#include "GLCore/OpenGLDebug.h"
 
 Shader::Shader(const std::string &vertexFilePath, const std::string &fragmentFilePath)
 {

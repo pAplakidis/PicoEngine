@@ -1,6 +1,7 @@
 #include "IndexBuffer.h"
 
-#include "Renderer.h"
+#include <GL/glew.h>
+#include "GLCore/OpenGLDebug.h"
 
 IndexBuffer::IndexBuffer(unsigned int maxCount)
     : m_Count(0)
