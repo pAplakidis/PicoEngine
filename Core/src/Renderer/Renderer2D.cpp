@@ -163,6 +163,90 @@ void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, cons
        offset + 0});
 }
 
+void Renderer2D::DrawQuad(const glm::mat4 &transform, const Vec4 &color)
+{
+  constexpr uint32_t VertexCount = 4;
+  constexpr uint32_t IndexCount = 6;
+
+  if (m_Vertices.size() + VertexCount > MaxVertices || m_Indices.size() + IndexCount > MaxIndices)
+  {
+    Flush();
+  }
+
+  uint32_t offset = static_cast<uint32_t>(m_Vertices.size());
+
+  static constexpr glm::vec4 localPositions[4] =
+      {
+          {-0.5f, -0.5f, 0.0f, 1.0f},
+          {0.5f, -0.5f, 0.0f, 1.0f},
+          {0.5f, 0.5f, 0.0f, 1.0f},
+          {-0.5f, 0.5f, 0.0f, 1.0f}};
+
+  static constexpr Vec2 texCoords[4] =
+      {
+          {0.0f, 0.0f},
+          {1.0f, 0.0f},
+          {1.0f, 1.0f},
+          {0.0f, 1.0f}};
+
+  for (int i = 0; i < 4; i++)
+  {
+    glm::vec4 transformed = transform * localPositions[i];
+    m_Vertices.push_back({{transformed.x, transformed.y, transformed.z}, color, texCoords[i], 0.0f});
+  }
+  m_Indices.insert(
+      m_Indices.end(),
+      {offset + 0,
+       offset + 1,
+       offset + 2,
+       offset + 2,
+       offset + 3,
+       offset + 0});
+}
+
+void Renderer2D::DrawQuad(const glm::mat4 &transform, const Texture &texture)
+{
+  constexpr uint32_t VertexCount = 4;
+  constexpr uint32_t IndexCount = 6;
+
+  if (m_Vertices.size() + VertexCount > MaxVertices || m_Indices.size() + IndexCount > MaxIndices)
+  {
+    Flush();
+  }
+
+  float textureIndex = GetTextureIndex(texture);
+
+  uint32_t offset = static_cast<uint32_t>(m_Vertices.size());
+
+  static constexpr glm::vec4 localPositions[4] =
+      {
+          {-0.5f, -0.5f, 0.0f, 1.0f},
+          {0.5f, -0.5f, 0.0f, 1.0f},
+          {0.5f, 0.5f, 0.0f, 1.0f},
+          {-0.5f, 0.5f, 0.0f, 1.0f}};
+
+  static constexpr Vec2 texCoords[4] =
+      {
+          {0.0f, 0.0f},
+          {1.0f, 0.0f},
+          {1.0f, 1.0f},
+          {0.0f, 1.0f}};
+
+  for (int i = 0; i < 4; i++)
+  {
+    glm::vec4 transformed = transform * localPositions[i];
+    m_Vertices.push_back({{transformed.x, transformed.y, transformed.z}, Vec4{1, 1, 1, 1}, texCoords[i], textureIndex});
+  }
+  m_Indices.insert(
+      m_Indices.end(),
+      {offset + 0,
+       offset + 1,
+       offset + 2,
+       offset + 2,
+       offset + 3,
+       offset + 0});
+}
+
 void Renderer2D::Flush()
 {
   if (m_Vertices.empty())
@@ -177,7 +261,7 @@ void Renderer2D::Flush()
   }
 
   m_Shader->Bind();
-  m_Shader->SetUniformMat4f("u_MVP", m_ViewProjection);
+  m_Shader->SetUniformMat4f("u_ViewProjection", m_ViewProjection);
 
   m_VAO->Bind();
   m_IndexBuffer->Bind();

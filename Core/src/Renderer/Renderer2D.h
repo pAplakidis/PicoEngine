@@ -21,9 +21,16 @@ public:
   void BeginScene(const glm::mat4 &projection, const glm::mat4 &view);
   void EndScene();
 
-  void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Vec4 &color);
-  void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Texture &texture);
   void DrawTriangle(const glm::vec2 &position, float size, const Vec4 &color);
+
+  // TODO: we calculate transform on the CPU (might be slow multiplication, might use GPU later)
+  void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Vec4 &color);
+  // void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, float rotation, const Vec4 &color);
+  void DrawQuad(const glm::mat4 &transform, const Vec4 &color);
+
+  void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Texture &texture);
+  // void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, float rotation, const Texture &texture);
+  void DrawQuad(const glm::mat4 &transform, const Texture &texture);
 
   static constexpr uint32_t GetMaxQuads() { return MaxQuads; }
 

@@ -24,6 +24,7 @@
 #include "tests/TestTexture2D.h"
 #include "tests/TestTriangle.h"
 #include "tests/TestBatchRenderer2D.h"
+#include "tests/TestTransformations.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
@@ -91,6 +92,7 @@ int main(void)
         testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
         testMenu->RegisterTest<test::TestTriangle>("Triangle");
         testMenu->RegisterTest<test::TestBatchRenderer2D>("2D Batch Stress Test");
+        testMenu->RegisterTest<test::TestTransformations>("Transformations Test");
 
         while (!glfwWindowShouldClose(window))
         {

@@ -23,10 +23,15 @@ Texture::Texture(const std::string &path)
   GLCall(glGenTextures(1, &m_RendererID));
   GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 
+  // TODO: select between Linear and Nearest (?)
   GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
   GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+  // TODO: select between Repeat, MirroredRepeat, ClampToEdge and ClampToBorder
   GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
   GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+  // TODO: use and enable/disable this
+  // GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 
   GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
   GLCall(glBindTexture(GL_TEXTURE_2D, 0));

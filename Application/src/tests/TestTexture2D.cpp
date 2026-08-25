@@ -15,7 +15,6 @@ namespace test
           m_TranslationB(400.0f, 200.0f, 0.0f)
     {
         m_Renderer2D = std::make_unique<Renderer2D>();
-
         m_Texture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/gold-dollar.png");
     }
 
