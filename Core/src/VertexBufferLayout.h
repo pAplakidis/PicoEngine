@@ -23,7 +23,7 @@ struct VertexBufferElement
     case GL_UNSIGNED_BYTE:
       return 1;
     }
-    ASSERT(false);
+    PICOENGINE_ASSERT(false, "Unsupported vertex buffer element type");
     return 0;
   }
 };

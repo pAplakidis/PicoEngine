@@ -1,19 +1,54 @@
-#include "GLCore/OpenGLDebug.h"
+#include "glpch.h"
+#include "OpenGLDebug.h"
 
-#include <iostream>
-
-void GLClearError()
+namespace PicoEngine
 {
-  while (glGetError() != GL_NO_ERROR)
-    ;
-}
 
-bool GLLogCall(const char *function, const char *file, int line)
-{
-  while (GLenum error = glGetError())
+  static DebugLogLevel s_DebugLogLevel = DebugLogLevel::HighAssert;
+
+  void SetGLDebugLogLevel(DebugLogLevel level)
   {
-    std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
-    return false;
+    s_DebugLogLevel = level;
   }
-  return true;
+
+  void OpenGLLogMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
+  {
+    switch (severity)
+    {
+    case GL_DEBUG_SEVERITY_HIGH:
+      if ((int)s_DebugLogLevel > 0)
+      {
+        LOG_ERROR("[OpenGL Debug HIGH] {0}", message);
+        if (s_DebugLogLevel == DebugLogLevel::HighAssert)
+          PICOENGINE_ASSERT(false, "GL_DEBUG_SEVERITY_HIGH");
+      }
+      break;
+    case GL_DEBUG_SEVERITY_MEDIUM:
+      if ((int)s_DebugLogLevel > 2)
+        LOG_WARN("[OpenGL Debug MEDIUM] {0}", message);
+      break;
+    case GL_DEBUG_SEVERITY_LOW:
+      if ((int)s_DebugLogLevel > 3)
+        LOG_INFO("[OpenGL Debug LOW] {0}", message);
+      break;
+    case GL_DEBUG_SEVERITY_NOTIFICATION:
+      if ((int)s_DebugLogLevel > 4)
+        LOG_TRACE("[OpenGL Debug NOTIFICATION] {0}", message);
+      break;
+    }
+  }
+
+  void EnableGLDebugging()
+  {
+    if (!GLEW_VERSION_4_3 && !GLEW_KHR_debug)
+    {
+      LOG_WARN("OpenGL debug output is unavailable");
+      return;
+    }
+
+    glDebugMessageCallback(OpenGLLogMessage, nullptr);
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+  }
+
 }

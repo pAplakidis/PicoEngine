@@ -164,6 +164,13 @@ endif()
 
 
 # ---------------------------------------------------------------------------
+# spdlog
+# ---------------------------------------------------------------------------
+
+add_subdirectory(Dependencies/spdlog-1.17.0)
+
+
+# ---------------------------------------------------------------------------
 # Core
 # ---------------------------------------------------------------------------
 
@@ -202,6 +209,7 @@ target_include_directories(Core
 target_compile_definitions(Core
   PUBLIC
     GLFW_INCLUDE_NONE
+    "$<$<CONFIG:Debug>:PICOENGINE_DEBUG>"
 )
 
 target_compile_definitions(Core
@@ -213,6 +221,7 @@ target_link_libraries(Core
   PUBLIC
     glfw
     glew
+    spdlog::spdlog
     OpenGL::GL
 )
 

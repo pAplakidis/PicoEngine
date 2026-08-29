@@ -31,8 +31,8 @@ namespace test
   void TestTransformations::OnRender()
   {
 
-    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-    GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     m_Renderer2D->BeginScene(m_Proj, m_View);
 

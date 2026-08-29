@@ -1,41 +1,36 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
-#include <string>
 #include <functional>
+#include <string>
+#include <vector>
 
-namespace test
-{
-  class Test
-  {
-  public:
-    Test() {}
-    virtual ~Test() {}
+#include "Log.h"
 
-    virtual void OnUpdate(float deltaTime) {}
-    virtual void OnRender() {}
-    virtual void OnImGuiRender() {}
-  };
+namespace test {
+class Test {
+public:
+  Test() {}
+  virtual ~Test() {}
 
-  class TestMenu : public Test
-  {
-  public:
-    TestMenu(Test *&currentTestPointer);
+  virtual void OnUpdate(float deltaTime) {}
+  virtual void OnRender() {}
+  virtual void OnImGuiRender() {}
+};
 
-    void OnImGuiRender() override;
+class TestMenu : public Test {
+public:
+  TestMenu(Test *&currentTestPointer);
 
-    template <typename T>
-    void RegisterTest(const std::string &name)
-    {
-      std::cout << "Registering test" << name << std::endl;
+  void OnImGuiRender() override;
 
-      m_Tests.push_back(std::make_pair(name, []()
-                                       { return new T(); }));
-    }
+  template <typename T> void RegisterTest(const std::string &name) {
+    LOG_INFO("Registering test {}", name);
 
-  private:
-    Test *&m_CurrentTest;
-    std::vector<std::pair<std::string, std::function<Test *()>>> m_Tests;
-  };
-}
+    m_Tests.push_back(std::make_pair(name, []() { return new T(); }));
+  }
+
+private:
+  Test *&m_CurrentTest;
+  std::vector<std::pair<std::string, std::function<Test *()>>> m_Tests;
+};
+} // namespace test
