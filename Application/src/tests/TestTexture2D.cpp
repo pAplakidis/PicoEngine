@@ -9,13 +9,12 @@
 namespace test
 {
     TestTexture2D::TestTexture2D()
-        : m_Proj(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
-          m_View(glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, 0.0f, 0.0f))),
-          m_TranslationA(200.0f, 200.0f, 0.0f),
+        : m_TranslationA(200.0f, 200.0f, 0.0f),
           m_TranslationB(400.0f, 200.0f, 0.0f)
     {
         m_Renderer2D = std::make_unique<Renderer2D>();
         m_Texture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/gold-dollar.png");
+        m_Camera = std::make_unique<PicoEngine::OrthographicCamera>(0.0f, 960.0f, 0.0f, 540.0f);
     }
 
     TestTexture2D::~TestTexture2D()
@@ -31,7 +30,7 @@ namespace test
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_Renderer2D->BeginScene(m_Proj, m_View);
+        m_Renderer2D->BeginScene(*m_Camera);
 
         m_Renderer2D->DrawQuad(
             {m_TranslationA.x, m_TranslationA.y},

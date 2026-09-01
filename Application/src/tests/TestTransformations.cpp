@@ -10,14 +10,13 @@
 namespace test
 {
   TestTransformations::TestTransformations()
-      : m_Proj(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
-        m_View(glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, 0.0f, 0.0f))),
-        m_Translation(200.0f, 200.0f, 0.0f),
+      : m_Translation(200.0f, 200.0f, 0.0f),
         m_Rotation(0.0f, 0.0f, 0.0f),
         m_Scale(100.0f, 100.0f, 100.0f)
   {
     m_Renderer2D = std::make_unique<Renderer2D>();
     m_Texture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/mario.png");
+    m_Camera = std::make_unique<PicoEngine::OrthographicCamera>(0.0f, 960.0f, 0.0f, 540.0f);
   }
 
   TestTransformations::~TestTransformations()
@@ -34,7 +33,7 @@ namespace test
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    m_Renderer2D->BeginScene(m_Proj, m_View);
+    m_Renderer2D->BeginScene(*m_Camera);
 
     // TODO: do this inside DrawQuad (?)
     // T * R * S

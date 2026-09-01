@@ -5,6 +5,7 @@
 #include "Test.h"
 #include "Renderer/Renderer2D.h"
 #include "glm/glm.hpp"
+#include "Camera/OrthographicCamera.h"
 
 namespace test
 {
@@ -20,9 +21,7 @@ namespace test
 
   private:
     std::unique_ptr<Renderer2D> m_Renderer2D;
-
-    glm::mat4 m_Proj;
-    glm::mat4 m_View;
+    std::unique_ptr<PicoEngine::OrthographicCamera> m_Camera;
 
     glm::vec3 m_TranslationQ0;
     glm::vec3 m_TranslationQ1;

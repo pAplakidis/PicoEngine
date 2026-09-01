@@ -10,13 +10,12 @@
 namespace test
 {
     TestTriangle::TestTriangle()
-        : m_Proj(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
-          m_View(glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, 0.0f, 0.0f))),
-          m_TranslationQ0(200.0f, 200.0f, 0.0f),
+        : m_TranslationQ0(200.0f, 200.0f, 0.0f),
           m_TranslationQ1(500.0f, 200.0f, 0.0f),
           m_TranslationT0(350.0f, 200.0f, 0.0f)
     {
         m_Renderer2D = std::make_unique<Renderer2D>();
+        m_Camera = std::make_unique<PicoEngine::OrthographicCamera>(0.0f, 960.0f, 0.0f, 540.0f);
     }
 
     TestTriangle::~TestTriangle()
@@ -32,7 +31,7 @@ namespace test
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_Renderer2D->BeginScene(m_Proj, m_View);
+        m_Renderer2D->BeginScene(*m_Camera);
 
         m_Renderer2D->DrawQuad(
             glm::vec2(m_TranslationQ0.x, m_TranslationQ0.y),

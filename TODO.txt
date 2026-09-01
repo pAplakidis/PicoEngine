@@ -5,6 +5,7 @@ TODO
   Any subsequent drawing calls will render the triangles in wireframe mode until we set it back to its default using glPolygonMode(GL_FRONT_AND_BACK, GL_FILL).
 - Camera
 - Proper resizing
+- PicoEngine namespace
 
 - Batch Rendering (DONE)
 - Replace all Renderer with Renderer2D (DONE)

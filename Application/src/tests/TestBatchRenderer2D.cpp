@@ -11,27 +11,12 @@
 namespace test
 {
     TestBatchRenderer2D::TestBatchRenderer2D()
-        : m_Proj(glm::ortho(
-              0.0f,
-              960.0f,
-              0.0f,
-              540.0f,
-              -1.0f,
-              1.0f)),
-          m_View(glm::mat4(1.0f))
     {
-        m_Renderer2D =
-            std::make_unique<Renderer2D>();
+        m_Renderer2D = std::make_unique<Renderer2D>();
+        m_Camera = std::make_unique<PicoEngine::OrthographicCamera>(0.0f, 960.0f, 0.0f, 540.0f);
 
-        m_MarioTexture =
-            std::make_unique<Texture>(
-                APPLICATION_RESOURCES_PATH
-                "textures/mario.png");
-
-        m_GoldDollarTexture =
-            std::make_unique<Texture>(
-                APPLICATION_RESOURCES_PATH
-                "textures/gold-dollar.png");
+        m_MarioTexture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/mario.png");
+        m_GoldDollarTexture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/gold-dollar.png");
     }
 
     TestBatchRenderer2D::~TestBatchRenderer2D()
@@ -47,7 +32,7 @@ namespace test
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_Renderer2D->BeginScene(m_Proj, m_View);
+        m_Renderer2D->BeginScene(*m_Camera);
 
         constexpr uint32_t Columns = 100;
 
@@ -61,15 +46,10 @@ namespace test
         {
             const uint32_t column = i % Columns;
             const uint32_t row = i / Columns;
-
             const float x = 20.0f + column * (QuadSize + Gap);
-
             const float y = 10.0f + row * (QuadSize + Gap);
-
             const bool useMario = (column + row) % 2 == 0;
-
             const Texture &texture = useMario ? *m_MarioTexture : *m_GoldDollarTexture;
-
             m_Renderer2D->DrawQuad({x, y}, {QuadSize, QuadSize}, texture);
         }
 
