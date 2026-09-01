@@ -11,7 +11,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "Log.h"
+#include "Util/Log.h"
 
 #ifdef GLCORE_PLATFORM_WINDOWS
 #include <Windows.h>

@@ -24,7 +24,7 @@ namespace test
 
   private:
     std::unique_ptr<Renderer2D> m_Renderer2D;
-    std::unique_ptr<PicoEngine::OrthographicCamera> m_Camera;
+    PicoEngine::OrthographicCamera m_Camera;
 
     std::unique_ptr<Texture> m_MarioTexture;
     std::unique_ptr<Texture> m_GoldDollarTexture;

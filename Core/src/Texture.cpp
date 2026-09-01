@@ -2,17 +2,19 @@
 
 #include <GL/glew.h>
 
-#include "Log.h"
+#include "Util/Log.h"
 #include "stb_image/stb_image.h"
 
 Texture::Texture(const std::string &path)
     : m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr), m_Width(0),
-      m_Height(0), m_BPP(0) {
+      m_Height(0), m_BPP(0)
+{
   stbi_set_flip_vertically_on_load(1);
   m_LocalBuffer =
       stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4); // 4 => RGBA
 
-  if (m_LocalBuffer == nullptr) {
+  if (m_LocalBuffer == nullptr)
+  {
     LOG_ERROR("Failed to load texture: {}", path);
     return;
   }
@@ -56,19 +58,22 @@ Texture::Texture(uint32_t width, uint32_t height, const void *data)
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Texture::~Texture() {
+Texture::~Texture()
+{
   if (m_RendererID != 0)
     glDeleteTextures(1, &m_RendererID);
 }
 
-void Texture::Bind(unsigned int slot) const {
+void Texture::Bind(unsigned int slot) const
+{
   if (m_RendererID == 0)
     return;
   glActiveTexture(GL_TEXTURE0 + slot);
   glBindTexture(GL_TEXTURE_2D, m_RendererID);
 }
 
-void Texture::Unbind() const {
+void Texture::Unbind() const
+{
   if (m_RendererID == 0)
     return;
   glBindTexture(GL_TEXTURE_2D, 0);

@@ -6,6 +6,7 @@ TODO
 - Camera
 - Proper resizing
 - PicoEngine namespace
+- move stuff to the stack
 
 - Batch Rendering (DONE)
 - Replace all Renderer with Renderer2D (DONE)

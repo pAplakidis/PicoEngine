@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-#include "Log.h"
+#include "Util/Log.h"
 
 #ifdef PICOENGINE_DEBUG
 #define PICOENGINE_ENABLE_ASSERTS

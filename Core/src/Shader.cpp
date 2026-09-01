@@ -6,10 +6,11 @@
 #include <string>
 
 #include "GLCore/OpenGLDebug.h"
-#include "Log.h"
+#include "Util/Log.h"
 
 Shader::Shader(const std::string &vertexFilePath,
-               const std::string &fragmentFilePath) {
+               const std::string &fragmentFilePath)
+{
   std::string vertexSource = ReadFile(vertexFilePath);
   std::string fragmentSource = ReadFile(fragmentFilePath);
   m_RendererID = CreateShader(vertexSource, fragmentSource);
@@ -17,16 +18,19 @@ Shader::Shader(const std::string &vertexFilePath,
 
 Shader::~Shader() { glDeleteProgram(m_RendererID); }
 
-std::string Shader::ReadFile(const std::string &filepath) {
+std::string Shader::ReadFile(const std::string &filepath)
+{
   std::ifstream stream(filepath);
-  if (!stream.is_open()) {
+  if (!stream.is_open())
+  {
     LOG_ERROR("Failed to open shader file: {}", filepath);
     return {};
   }
 
   std::stringstream ss;
   std::string line;
-  while (getline(stream, line)) {
+  while (getline(stream, line))
+  {
     ss << line << '\n';
   }
 
@@ -34,7 +38,8 @@ std::string Shader::ReadFile(const std::string &filepath) {
 }
 
 unsigned int Shader::CompileShader(unsigned int type,
-                                   const std::string &source) {
+                                   const std::string &source)
+{
   unsigned int id = glCreateShader(type);
   const char *src = source.c_str();
   glShaderSource(id, 1, &src,
@@ -44,7 +49,8 @@ unsigned int Shader::CompileShader(unsigned int type,
   // Error handling
   int result;
   glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-  if (result == GL_FALSE) {
+  if (result == GL_FALSE)
+  {
     int length;
     glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
     char *message = (char *)alloca(length * sizeof(char));
@@ -60,8 +66,10 @@ unsigned int Shader::CompileShader(unsigned int type,
 }
 
 unsigned int Shader::CreateShader(const std::string &vertexShader,
-                                  const std::string &fragmentShader) {
-  if (vertexShader.empty() || fragmentShader.empty()) {
+                                  const std::string &fragmentShader)
+{
+  if (vertexShader.empty() || fragmentShader.empty())
+  {
     return 0;
   }
 
@@ -71,7 +79,8 @@ unsigned int Shader::CreateShader(const std::string &vertexShader,
   unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
   unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-  if (vs == 0 || fs == 0) {
+  if (vs == 0 || fs == 0)
+  {
     glDeleteProgram(program);
     return 0;
   }
@@ -83,7 +92,8 @@ unsigned int Shader::CreateShader(const std::string &vertexShader,
 
   int linkStatus;
   glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-  if (linkStatus == GL_FALSE) {
+  if (linkStatus == GL_FALSE)
+  {
     int length;
     glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
     char *message = (char *)alloca(length * sizeof(char));
@@ -104,58 +114,67 @@ unsigned int Shader::CreateShader(const std::string &vertexShader,
   return program;
 }
 
-void Shader::Bind() const {
+void Shader::Bind() const
+{
   if (m_RendererID == 0)
     return;
   glUseProgram(m_RendererID);
 }
 
-void Shader::Unbind() const {
+void Shader::Unbind() const
+{
   if (m_RendererID == 0)
     return;
   glUseProgram(0);
 }
 
-void Shader::SetUniform1i(const std::string &name, int value) {
+void Shader::SetUniform1i(const std::string &name, int value)
+{
   if (m_RendererID == 0)
     return;
   glUniform1i(GetUniformLocation(m_RendererID, name), value);
 }
 
 void Shader::SetUniform1iv(const std::string &name, int count,
-                           const int *values) {
+                           const int *values)
+{
   if (m_RendererID == 0)
     return;
   glUniform1iv(GetUniformLocation(m_RendererID, name), count, values);
 }
 
-void Shader::SetUniform1f(const std::string &name, float value) {
+void Shader::SetUniform1f(const std::string &name, float value)
+{
   if (m_RendererID == 0)
     return;
   glUniform1f(GetUniformLocation(m_RendererID, name), value);
 }
 
-void Shader::SetUniform2f(const std::string &name, const glm::vec2 &value) {
+void Shader::SetUniform2f(const std::string &name, const glm::vec2 &value)
+{
   if (m_RendererID == 0)
     return;
   glUniform2f(GetUniformLocation(m_RendererID, name), value.x, value.y);
 }
 
-void Shader::SetUniform3f(const std::string &name, const glm::vec3 &value) {
+void Shader::SetUniform3f(const std::string &name, const glm::vec3 &value)
+{
   if (m_RendererID == 0)
     return;
   glUniform3f(GetUniformLocation(m_RendererID, name), value.x, value.y,
               value.z);
 }
 
-void Shader::SetUniform4f(const std::string &name, const glm::vec4 &value) {
+void Shader::SetUniform4f(const std::string &name, const glm::vec4 &value)
+{
   if (m_RendererID == 0)
     return;
   glUniform4f(GetUniformLocation(m_RendererID, name), value.x, value.y, value.z,
               value.w);
 }
 
-void Shader::SetUniformMat3f(const std::string &name, const glm::mat3 &matrix) {
+void Shader::SetUniformMat3f(const std::string &name, const glm::mat3 &matrix)
+{
   if (m_RendererID == 0)
     return;
 
@@ -163,7 +182,8 @@ void Shader::SetUniformMat3f(const std::string &name, const glm::mat3 &matrix) {
                      &matrix[0][0]);
 }
 
-void Shader::SetUniformMat4f(const std::string &name, const glm::mat4 &matrix) {
+void Shader::SetUniformMat4f(const std::string &name, const glm::mat4 &matrix)
+{
   if (m_RendererID == 0)
     return;
   glUniformMatrix4fv(GetUniformLocation(m_RendererID, name), 1, GL_FALSE,
@@ -171,7 +191,8 @@ void Shader::SetUniformMat4f(const std::string &name, const glm::mat4 &matrix) {
 }
 
 int Shader::GetUniformLocation(unsigned int rendererID,
-                               const std::string &name) {
+                               const std::string &name)
+{
   if (rendererID == 0)
     return -1;
 

@@ -22,7 +22,7 @@ namespace test
   private:
     std::unique_ptr<Renderer2D> m_Renderer2D;
     std::unique_ptr<Texture> m_Texture;
-    std::unique_ptr<PicoEngine::OrthographicCamera> m_Camera;
+    PicoEngine::OrthographicCamera m_Camera;
 
     glm::vec3 m_Translation;
     glm::vec3 m_Rotation;

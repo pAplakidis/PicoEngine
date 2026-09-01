@@ -11,9 +11,9 @@
 namespace test
 {
     TestBatchRenderer2D::TestBatchRenderer2D()
+        : m_Camera(0.0f, 960.0f, 0.0f, 540.0f)
     {
         m_Renderer2D = std::make_unique<Renderer2D>();
-        m_Camera = std::make_unique<PicoEngine::OrthographicCamera>(0.0f, 960.0f, 0.0f, 540.0f);
 
         m_MarioTexture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/mario.png");
         m_GoldDollarTexture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/gold-dollar.png");
@@ -32,7 +32,7 @@ namespace test
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_Renderer2D->BeginScene(*m_Camera);
+        m_Renderer2D->BeginScene(m_Camera);
 
         constexpr uint32_t Columns = 100;
 

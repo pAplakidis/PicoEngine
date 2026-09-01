@@ -11,6 +11,7 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera/OrthographicCamera.h"
 
 class Renderer2D
 {
@@ -18,12 +19,12 @@ public:
   Renderer2D();
   ~Renderer2D();
 
-  void BeginScene(const glm::mat4 &projection, const glm::mat4 &view);
+  void BeginScene(PicoEngine::OrthographicCamera &camera);
   void EndScene();
 
   void DrawTriangle(const glm::vec2 &position, float size, const Vec4 &color);
 
-  // TODO: we calculate transform on the CPU (might be slow multiplication, might use GPU later)
+  // TODO: DrawQuad with position and rotation + cleanup: both should end up using the transform matrix version
   void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Vec4 &color);
   // void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, float rotation, const Vec4 &color);
   void DrawQuad(const glm::mat4 &transform, const Vec4 &color);

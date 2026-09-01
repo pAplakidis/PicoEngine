@@ -7,7 +7,7 @@
 #include <string>
 
 #include <Core/src/IndexBuffer.h>
-#include <Core/src/Log.h>
+#include <Core/src/Util/Log.h>
 #include <Core/src/Shader.h>
 #include <Core/src/Texture.h>
 #include <Core/src/VertexArray.h>
@@ -27,16 +27,19 @@
 #include "tests/TestTransformations.h"
 #include "tests/TestTriangle.h"
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+{
   glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow *window) {
+void processInput(GLFWwindow *window)
+{
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
 }
 
-int main(void) {
+int main(void)
+{
   GLFWwindow *window;
 
   /* Initialize the library */
@@ -54,7 +57,8 @@ int main(void) {
   /* Create a windowed mode window and its OpenGL context */
   window = glfwCreateWindow(960, 540, "Application", NULL, NULL);
 
-  if (!window) {
+  if (!window)
+  {
     glfwTerminate();
     return -1;
   }
@@ -69,7 +73,8 @@ int main(void) {
 
   glewExperimental = GL_TRUE;
 
-  if (glewInit() != GLEW_OK) {
+  if (glewInit() != GLEW_OK)
+  {
     std::cerr << "Failed to initialize GLEW" << std::endl;
     glfwTerminate();
     return -1;
@@ -104,7 +109,8 @@ int main(void) {
     testMenu->RegisterTest<test::TestBatchRenderer2D>("2D Batch Stress Test");
     testMenu->RegisterTest<test::TestTransformations>("Transformations Test");
 
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window))
+    {
       // input
       processInput(window);
 
@@ -114,11 +120,13 @@ int main(void) {
       ImGui_ImplOpenGL3_NewFrame();
       ImGui_ImplGlfw_NewFrame();
       ImGui::NewFrame();
-      if (currentTest) {
+      if (currentTest)
+      {
         currentTest->OnUpdate(0.0f);
         currentTest->OnRender();
         ImGui::Begin("Test");
-        if (currentTest != testMenu && ImGui::Button("<-")) {
+        if (currentTest != testMenu && ImGui::Button("<-"))
+        {
           delete currentTest;
           currentTest = testMenu;
         }
@@ -134,7 +142,8 @@ int main(void) {
     }
 
     delete currentTest;
-    if (currentTest != testMenu) {
+    if (currentTest != testMenu)
+    {
       delete testMenu;
     }
   }

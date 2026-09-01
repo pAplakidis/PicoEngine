@@ -67,10 +67,9 @@ Renderer2D::Renderer2D()
 
 Renderer2D::~Renderer2D() {}
 
-void Renderer2D::BeginScene(const glm::mat4 &projection,
-                            const glm::mat4 &view)
+void Renderer2D::BeginScene(PicoEngine::OrthographicCamera &camera)
 {
-  m_ViewProjection = projection * view;
+  m_ViewProjection = camera.GetViewProjectionMatrix();
   m_Vertices.clear();
   m_Indices.clear();
 }
@@ -83,8 +82,7 @@ void Renderer2D::DrawTriangle(const glm::vec2 &position, float size,
   constexpr uint32_t VertexCount = 3;
   constexpr uint32_t IndexCount = 3;
 
-  if (m_Vertices.size() + VertexCount > MaxVertices ||
-      m_Indices.size() + IndexCount > MaxIndices)
+  if (m_Vertices.size() + VertexCount > MaxVertices || m_Indices.size() + IndexCount > MaxIndices)
   {
     Flush();
   }
@@ -127,8 +125,7 @@ void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size,
   constexpr uint32_t VertexCount = 4;
   constexpr uint32_t IndexCount = 6;
 
-  if (m_Vertices.size() + VertexCount > MaxVertices ||
-      m_Indices.size() + IndexCount > MaxIndices)
+  if (m_Vertices.size() + VertexCount > MaxVertices || m_Indices.size() + IndexCount > MaxIndices)
   {
     Flush();
   }
@@ -138,8 +135,7 @@ void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size,
   uint32_t offset = static_cast<uint32_t>(m_Vertices.size());
 
   auto quad =
-      PrimitiveFactory::CreateQuad(position.x, position.y, size.x, size.y,
-                                   Vec4{1.0f, 1.0f, 1.0f, 1.0f}, textureIndex);
+      PrimitiveFactory::CreateQuad(position.x, position.y, size.x, size.y, Vec4{1.0f, 1.0f, 1.0f, 1.0f}, textureIndex);
 
   m_Vertices.insert(m_Vertices.end(), quad.begin(), quad.end());
   m_Indices.insert(m_Indices.end(), {offset + 0, offset + 1, offset + 2,
@@ -151,8 +147,7 @@ void Renderer2D::DrawQuad(const glm::mat4 &transform, const Vec4 &color)
   constexpr uint32_t VertexCount = 4;
   constexpr uint32_t IndexCount = 6;
 
-  if (m_Vertices.size() + VertexCount > MaxVertices ||
-      m_Indices.size() + IndexCount > MaxIndices)
+  if (m_Vertices.size() + VertexCount > MaxVertices || m_Indices.size() + IndexCount > MaxIndices)
   {
     Flush();
   }
@@ -184,8 +179,7 @@ void Renderer2D::DrawQuad(const glm::mat4 &transform, const Texture &texture)
   constexpr uint32_t VertexCount = 4;
   constexpr uint32_t IndexCount = 6;
 
-  if (m_Vertices.size() + VertexCount > MaxVertices ||
-      m_Indices.size() + IndexCount > MaxIndices)
+  if (m_Vertices.size() + VertexCount > MaxVertices || m_Indices.size() + IndexCount > MaxIndices)
   {
     Flush();
   }
