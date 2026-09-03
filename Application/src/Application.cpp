@@ -14,6 +14,7 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "Event/ApplicationEvent.h"
+#include "Util/Input.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -64,6 +65,8 @@ int main(void)
     return -1;
   }
 
+  PicoEngine::Input::Init(window);
+
   /* Make the window's context current */
   glfwMakeContextCurrent(window);
 
@@ -110,11 +113,13 @@ int main(void)
     testMenu->RegisterTest<test::TestBatchRenderer2D>("2D Batch Stress Test");
     testMenu->RegisterTest<test::TestTransformations>("Transformations Test");
 
-    PicoEngine::WindowResizeEvent e(1280, 720);
-    LOG_TRACE("{}", e.ToString());
-
+    float lastFrameTime = static_cast<float>(glfwGetTime());
     while (!glfwWindowShouldClose(window))
     {
+      float currentFrameTime = static_cast<float>(glfwGetTime());
+      float deltaTime = currentFrameTime - lastFrameTime;
+      lastFrameTime = currentFrameTime;
+
       // input
       processInput(window);
 
@@ -124,17 +129,22 @@ int main(void)
       ImGui_ImplOpenGL3_NewFrame();
       ImGui_ImplGlfw_NewFrame();
       ImGui::NewFrame();
+
       if (currentTest)
       {
-        currentTest->OnUpdate(0.0f);
+        currentTest->OnUpdate(deltaTime);
         currentTest->OnRender();
+
         ImGui::Begin("Test");
+
         if (currentTest != testMenu && ImGui::Button("<-"))
         {
           delete currentTest;
           currentTest = testMenu;
         }
+
         currentTest->OnImGuiRender();
+
         ImGui::End();
       }
 

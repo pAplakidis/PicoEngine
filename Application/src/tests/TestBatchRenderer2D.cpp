@@ -11,7 +11,7 @@
 namespace test
 {
     TestBatchRenderer2D::TestBatchRenderer2D()
-        : m_Camera(0.0f, 960.0f, 0.0f, 540.0f)
+        : m_CameraController(960.0f, 540.0f)
     {
         m_Renderer2D = std::make_unique<Renderer2D>();
 
@@ -25,6 +25,7 @@ namespace test
 
     void TestBatchRenderer2D::OnUpdate(float deltaTime)
     {
+        m_CameraController.OnUpdate(deltaTime);
     }
 
     void TestBatchRenderer2D::OnRender()
@@ -32,7 +33,7 @@ namespace test
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_Renderer2D->BeginScene(m_Camera);
+        m_Renderer2D->BeginScene(m_CameraController.GetCamera());
 
         constexpr uint32_t Columns = 100;
 

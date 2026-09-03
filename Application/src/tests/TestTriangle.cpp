@@ -10,7 +10,7 @@
 namespace test
 {
     TestTriangle::TestTriangle()
-        : m_Camera(0.0f, 960.0f, 0.0f, 540.0f),
+        : m_CameraController(960.0f, 540.0f),
           m_TranslationQ0(200.0f, 200.0f, 0.0f),
           m_TranslationQ1(500.0f, 200.0f, 0.0f),
           m_TranslationT0(350.0f, 200.0f, 0.0f)
@@ -24,6 +24,7 @@ namespace test
 
     void TestTriangle::OnUpdate(float deltaTime)
     {
+        m_CameraController.OnUpdate(deltaTime);
     }
 
     void TestTriangle::OnRender()
@@ -31,7 +32,7 @@ namespace test
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_Renderer2D->BeginScene(m_Camera);
+        m_Renderer2D->BeginScene(m_CameraController.GetCamera());
 
         m_Renderer2D->DrawQuad(
             glm::vec2(m_TranslationQ0.x, m_TranslationQ0.y),

@@ -9,7 +9,7 @@
 namespace test
 {
     TestTexture2D::TestTexture2D()
-        : m_Camera(0.0f, 960.0f, 0.0f, 540.0f),
+        : m_CameraController(960.0f, 540.0f),
           m_TranslationA(200.0f, 200.0f, 0.0f),
           m_TranslationB(400.0f, 200.0f, 0.0f)
     {
@@ -23,6 +23,7 @@ namespace test
 
     void TestTexture2D::OnUpdate(float deltaTime)
     {
+        m_CameraController.OnUpdate(deltaTime);
     }
 
     void TestTexture2D::OnRender()
@@ -30,7 +31,7 @@ namespace test
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_Renderer2D->BeginScene(m_Camera);
+        m_Renderer2D->BeginScene(m_CameraController.GetCamera());
 
         m_Renderer2D->DrawQuad(
             {m_TranslationA.x, m_TranslationA.y},

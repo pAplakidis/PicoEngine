@@ -10,7 +10,7 @@
 namespace test
 {
   TestTransformations::TestTransformations()
-      : m_Camera(0.0f, 960.0f, 0.0f, 540.0f),
+      : m_CameraController(960.0f, 540.0f),
         m_Translation(200.0f, 200.0f, 0.0f),
         m_Rotation(0.0f, 0.0f, 0.0f),
         m_Scale(100.0f, 100.0f, 100.0f)
@@ -25,6 +25,7 @@ namespace test
 
   void TestTransformations::OnUpdate(float deltaTime)
   {
+    m_CameraController.OnUpdate(deltaTime);
   }
 
   void TestTransformations::OnRender()
@@ -33,7 +34,7 @@ namespace test
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    m_Renderer2D->BeginScene(m_Camera);
+    m_Renderer2D->BeginScene(m_CameraController.GetCamera());
 
     // TODO: do this inside DrawQuad (?)
     // T * R * S

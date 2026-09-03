@@ -41,10 +41,10 @@ namespace PicoEngine
     int m_RepeatCount;
   };
 
-  class KeyRleasedEvent : public KeyEvent
+  class KeyReleasedEvent : public KeyEvent
   {
   public:
-    KeyRleasedEvent(int keycode)
+    KeyReleasedEvent(int keycode)
         : KeyEvent(keycode) {}
 
     std::string ToString() const override
