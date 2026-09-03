@@ -6,13 +6,14 @@
 #include <sstream>
 #include <string>
 
-#include <Core/src/IndexBuffer.h>
-#include <Core/src/Util/Log.h>
-#include <Core/src/Shader.h>
-#include <Core/src/Texture.h>
-#include <Core/src/VertexArray.h>
-#include <Core/src/VertexBuffer.h>
-#include <Core/src/VertexBufferLayout.h>
+#include "IndexBuffer.h"
+#include "Util/Log.h"
+#include "Shader.h"
+#include "Texture.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "Event/ApplicationEvent.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -108,6 +109,9 @@ int main(void)
     testMenu->RegisterTest<test::TestTriangle>("Triangle");
     testMenu->RegisterTest<test::TestBatchRenderer2D>("2D Batch Stress Test");
     testMenu->RegisterTest<test::TestTransformations>("Transformations Test");
+
+    PicoEngine::WindowResizeEvent e(1280, 720);
+    LOG_TRACE("{}", e.ToString());
 
     while (!glfwWindowShouldClose(window))
     {
