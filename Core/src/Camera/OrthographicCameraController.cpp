@@ -18,19 +18,34 @@ namespace PicoEngine
 
   void OrthographicCameraController::OnUpdate(float deltaTime)
   {
-    if (Input::IsKeyPressed(GLFW_KEY_A))
-      m_CameraPosition.x -= m_CameraTranslationSpeed * deltaTime;
+    glm::vec2 mousePosition{
+        Input::GetMouseX(),
+        Input::GetMouseY()};
 
-    if (Input::IsKeyPressed(GLFW_KEY_D))
-      m_CameraPosition.x += m_CameraTranslationSpeed * deltaTime;
+    if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE))
+    {
+      if (!m_IsPanning)
+      {
+        m_LastMousePosition = mousePosition;
+        m_IsPanning = true;
+        return;
+      }
 
-    if (Input::IsKeyPressed(GLFW_KEY_W))
-      m_CameraPosition.y += m_CameraTranslationSpeed * deltaTime;
+      glm::vec2 delta = mousePosition - m_LastMousePosition;
 
-    if (Input::IsKeyPressed(GLFW_KEY_S))
-      m_CameraPosition.y -= m_CameraTranslationSpeed * deltaTime;
+      float panScale = m_ZoomLevel;
 
-    m_Camera.SetPosition(m_CameraPosition);
+      m_CameraPosition.x -= delta.x * m_PanSpeed * panScale;
+      m_CameraPosition.y += delta.y * m_PanSpeed * panScale;
+
+      m_Camera.SetPosition(m_CameraPosition);
+
+      m_LastMousePosition = mousePosition;
+    }
+    else
+    {
+      m_IsPanning = false;
+    }
   }
 
   void OrthographicCameraController::OnEvent(Event &event)

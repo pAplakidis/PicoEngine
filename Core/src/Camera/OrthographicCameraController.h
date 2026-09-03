@@ -37,9 +37,11 @@ namespace PicoEngine
     float m_ZoomLevel = 1.0f;
 
     OrthographicCamera m_Camera;
-
     glm::vec3 m_CameraPosition{0.0f};
-    float m_CameraTranslationSpeed = 300.0f;
+
+    bool m_IsPanning = false;
+    float m_PanSpeed = 1.0f;
+    glm::vec2 m_LastMousePosition{0.0f};
   };
 
 }
