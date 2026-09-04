@@ -229,6 +229,7 @@ void Renderer2D::Flush()
   m_VAO->Bind();
   m_IndexBuffer->Bind();
 
+  glPolygonMode(GL_FRONT_AND_BACK, m_WireframeEnabled ? GL_LINE : GL_FILL); // wireframe mode
   glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_Indices.size()),
                  GL_UNSIGNED_INT, nullptr);
 

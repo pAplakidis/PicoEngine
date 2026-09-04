@@ -33,6 +33,9 @@ public:
   // void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, float rotation, const Texture &texture);
   void DrawQuad(const glm::mat4 &transform, const Texture &texture);
 
+  bool IsWireframeEnabled() const { return m_WireframeEnabled; }
+  void SetWireframeEnabled(bool enabled) { m_WireframeEnabled = enabled; }
+
   static constexpr uint32_t GetMaxQuads() { return MaxQuads; }
 
 private:
@@ -60,4 +63,6 @@ private:
 
   glm::mat4 m_ViewProjection{1.0f};
   glm::mat4 m_Transform{1.0f};
+
+  bool m_WireframeEnabled = false;
 };

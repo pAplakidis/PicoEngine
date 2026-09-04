@@ -26,5 +26,7 @@ namespace test
     glm::vec3 m_TranslationQ0;
     glm::vec3 m_TranslationQ1;
     glm::vec3 m_TranslationT0;
+
+    bool m_WireframeEnabled = false;
   };
 }

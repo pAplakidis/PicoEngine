@@ -33,6 +33,7 @@ namespace test
         glClear(GL_COLOR_BUFFER_BIT);
 
         m_Renderer2D->BeginScene(m_CameraController.GetCamera());
+        m_Renderer2D->SetWireframeEnabled(m_WireframeEnabled);
 
         m_Renderer2D->DrawQuad(
             glm::vec2(m_TranslationQ0.x, m_TranslationQ0.y),
@@ -55,6 +56,7 @@ namespace test
         ImGui::SliderFloat3("Quad 0 Translation", &m_TranslationQ0.x, 0.0f, 960.0f);
         ImGui::SliderFloat3("Triangle Translation", &m_TranslationT0.x, 0.0f, 960.0f);
         ImGui::SliderFloat3("Quad 1 Translation", &m_TranslationQ1.x, 0.0f, 960.0f);
+        ImGui::Checkbox("Wireframe Mode", &m_WireframeEnabled);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     }
 }
