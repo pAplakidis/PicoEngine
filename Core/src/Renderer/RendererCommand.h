@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "RendererAPI.h"
-#include "VertexArray.h"
+#include "GL/VertexArray.h"
 
 namespace PicoEngine
 {

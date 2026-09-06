@@ -4,7 +4,7 @@
 
 #include <array>
 
-#include "BatchVertex.h"
+#include "Renderer/GL/BatchVertex.h"
 
 namespace PrimitiveFactory
 {

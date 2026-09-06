@@ -1,7 +1,7 @@
 #include "Renderer2D.h"
 
 #include "RendererCommand.h"
-#include "VertexBufferLayout.h"
+#include "GL/VertexBufferLayout.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 

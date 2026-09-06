@@ -6,12 +6,12 @@
 #include <glm/glm.hpp>
 
 #include "RendererAPI.h"
-#include "BatchVertex.h"
-#include "VertexArray.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "Shader.h"
-#include "Texture.h"
+#include "GL/BatchVertex.h"
+#include "GL/VertexArray.h"
+#include "GL/VertexBuffer.h"
+#include "GL/IndexBuffer.h"
+#include "GL/Shader.h"
+#include "GL/Texture.h"
 #include "Camera/OrthographicCamera.h"
 
 namespace PicoEngine

@@ -7,7 +7,7 @@
 #include "glm/glm.hpp"
 
 #include "Renderer/Renderer2D.h"
-#include "Texture.h"
+#include "Renderer/GL/Texture.h"
 #include "Camera/OrthographicCameraController.h"
 
 namespace test

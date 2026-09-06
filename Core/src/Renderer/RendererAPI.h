@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VertexArray.h"
+#include "GL/VertexArray.h"
 
 class RendererAPI
 {

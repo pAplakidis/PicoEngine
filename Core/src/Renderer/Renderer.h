@@ -2,8 +2,8 @@
 
 #include <memory>
 #include "Renderer2D.h"
-#include "VertexArray.h"
-#include "Shader.h"
+#include "GL/VertexArray.h"
+#include "GL/Shader.h"
 
 namespace PicoEngine
 {
