@@ -20,7 +20,7 @@ namespace test
     void OnImGuiRender() override;
 
   private:
-    std::unique_ptr<Renderer2D> m_Renderer2D;
+    PicoEngine::Renderer2D &m_Renderer2D;
     std::unique_ptr<Texture> m_Texture;
     PicoEngine::OrthographicCameraController m_CameraController;
 

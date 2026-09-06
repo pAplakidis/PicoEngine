@@ -6,14 +6,10 @@
 #include <sstream>
 #include <string>
 
-#include "IndexBuffer.h"
-#include "Util/Log.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "VertexArray.h"
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
 #include "Event/ApplicationEvent.h"
+#include "Renderer/Renderer.h"
+#include "GLCore/OpenGLDebug.h"
+#include "Util/Log.h"
 #include "Util/Input.h"
 
 #include "glm/glm.hpp"
@@ -88,6 +84,8 @@ int main(void)
 #ifdef PICOENGINE_DEBUG
   PicoEngine::EnableGLDebugging();
 #endif
+
+  PicoEngine::Renderer::Init();
 
   LOG_INFO("OpenGL: {}",
            reinterpret_cast<const char *>(glGetString(GL_VERSION)));

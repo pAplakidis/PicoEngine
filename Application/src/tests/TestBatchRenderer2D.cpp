@@ -5,15 +5,15 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "Renderer/Renderer2D.h"
+#include "Renderer/Renderer.h"
 #include "GLCore/OpenGLDebug.h"
 
 namespace test
 {
     TestBatchRenderer2D::TestBatchRenderer2D()
-        : m_CameraController(960.0f, 540.0f)
+        : m_Renderer2D(PicoEngine::Renderer::GetRenderer2D()),
+          m_CameraController(960.0f, 540.0f)
     {
-        m_Renderer2D = std::make_unique<Renderer2D>();
 
         m_MarioTexture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/mario.png");
         m_GoldDollarTexture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/gold-dollar.png");
@@ -33,7 +33,7 @@ namespace test
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_Renderer2D->BeginScene(m_CameraController.GetCamera());
+        m_Renderer2D.BeginScene(m_CameraController.GetCamera());
 
         constexpr uint32_t Columns = 100;
 
@@ -41,7 +41,7 @@ namespace test
         constexpr float Gap = 0.25f;
 
         const uint32_t quadCount =
-            Renderer2D::GetMaxQuads() + 8;
+            PicoEngine::Renderer2D::GetMaxQuads() + 8;
 
         for (uint32_t i = 0; i < quadCount; i++)
         {
@@ -51,16 +51,16 @@ namespace test
             const float y = 10.0f + row * (QuadSize + Gap);
             const bool useMario = (column + row) % 2 == 0;
             const Texture &texture = useMario ? *m_MarioTexture : *m_GoldDollarTexture;
-            m_Renderer2D->DrawQuad({x, y}, {QuadSize, QuadSize}, texture);
+            m_Renderer2D.DrawQuad({x, y}, {QuadSize, QuadSize}, texture);
         }
 
-        m_Renderer2D->EndScene();
+        m_Renderer2D.EndScene();
     }
 
     void TestBatchRenderer2D::OnImGuiRender()
     {
-        ImGui::Text("Batch capacity: %u quads", Renderer2D::GetMaxQuads());
-        ImGui::Text("Quads submitted: %u", Renderer2D::GetMaxQuads() + 8);
+        ImGui::Text("Batch capacity: %u quads", PicoEngine::Renderer2D::GetMaxQuads());
+        ImGui::Text("Quads submitted: %u", PicoEngine::Renderer2D::GetMaxQuads() + 8);
         ImGui::Text("Expected minimum draw calls: 2");
         ImGui::Text("Textures: mario.png + gold-dollar.png");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

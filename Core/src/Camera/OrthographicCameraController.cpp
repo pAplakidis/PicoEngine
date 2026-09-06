@@ -12,7 +12,7 @@ namespace PicoEngine
       : m_ViewportWidth(width),
         m_ViewportHeight(height),
         m_AspectRatio(width / height),
-        m_Camera(0.0f, width, 0.0f, height)
+        m_Camera(0.0f, width, 0.0f, height) // TODO: (-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel)
   {
   }
 
@@ -84,7 +84,9 @@ namespace PicoEngine
     if (event.GetHeight() == 0)
       return false;
 
-    m_AspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
+    m_ViewportWidth = (float)event.GetWidth();
+    m_ViewportHeight = (float)event.GetHeight();
+    m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
     RecalculateProjection();
     return false;
   }

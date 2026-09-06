@@ -4,18 +4,18 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "Renderer/Renderer2D.h"
+#include "Renderer/Renderer.h"
 #include "GLCore/OpenGLDebug.h"
 
 namespace test
 {
     TestTriangle::TestTriangle()
-        : m_CameraController(960.0f, 540.0f),
+        : m_Renderer2D(PicoEngine::Renderer::GetRenderer2D()),
+          m_CameraController(960.0f, 540.0f),
           m_TranslationQ0(200.0f, 200.0f, 0.0f),
           m_TranslationQ1(500.0f, 200.0f, 0.0f),
           m_TranslationT0(350.0f, 200.0f, 0.0f)
     {
-        m_Renderer2D = std::make_unique<Renderer2D>();
     }
 
     TestTriangle::~TestTriangle()
@@ -32,23 +32,23 @@ namespace test
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        m_Renderer2D->BeginScene(m_CameraController.GetCamera());
-        m_Renderer2D->SetWireframeEnabled(m_WireframeEnabled);
+        m_Renderer2D.BeginScene(m_CameraController.GetCamera());
+        m_Renderer2D.SetWireframeEnabled(m_WireframeEnabled);
 
-        m_Renderer2D->DrawQuad(
+        m_Renderer2D.DrawQuad(
             glm::vec2(m_TranslationQ0.x, m_TranslationQ0.y),
             glm::vec2(100.0f, 100.0f),
             Vec4{1.0f, 0.0f, 0.0f, 1.0f});
-        m_Renderer2D->DrawTriangle(
+        m_Renderer2D.DrawTriangle(
             glm::vec2(m_TranslationT0.x, m_TranslationT0.y),
             100.0f,
             Vec4{0.0f, 1.0f, 0.0f, 1.0f});
-        m_Renderer2D->DrawQuad(
+        m_Renderer2D.DrawQuad(
             glm::vec2(m_TranslationQ1.x, m_TranslationQ1.y),
             glm::vec2(100.0f, 100.0f),
             Vec4{0.0f, 0.0f, 1.0f, 1.0f});
 
-        m_Renderer2D->EndScene();
+        m_Renderer2D.EndScene();
     }
 
     void TestTriangle::OnImGuiRender()

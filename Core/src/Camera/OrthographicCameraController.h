@@ -11,9 +11,11 @@
 namespace PicoEngine
 {
 
+  // TODO: rotation
   class OrthographicCameraController
   {
   public:
+    // FIXME: don't use width and height, use aspect ratio instead (more dynamic)
     OrthographicCameraController(float width, float height);
 
     void OnUpdate(float deltaTime);

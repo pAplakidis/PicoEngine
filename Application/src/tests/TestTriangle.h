@@ -1,10 +1,10 @@
 #pragma once
 
 #include <memory>
+#include "glm/glm.hpp"
 
 #include "Test.h"
 #include "Renderer/Renderer2D.h"
-#include "glm/glm.hpp"
 #include "Camera/OrthographicCameraController.h"
 
 namespace test
@@ -20,7 +20,7 @@ namespace test
     void OnImGuiRender() override;
 
   private:
-    std::unique_ptr<Renderer2D> m_Renderer2D;
+    PicoEngine::Renderer2D &m_Renderer2D;
     PicoEngine::OrthographicCameraController m_CameraController;
 
     glm::vec3 m_TranslationQ0;
