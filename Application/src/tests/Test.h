@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Util/Log.h"
+#include "Event/Event.h"
 
 namespace test
 {
@@ -16,6 +17,7 @@ namespace test
 
     virtual void OnUpdate(float deltaTime) {}
     virtual void OnRender() {}
+    virtual void OnEvent(PicoEngine::Event &event) {}
     virtual void OnImGuiRender() {}
   };
 

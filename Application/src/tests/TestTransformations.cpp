@@ -6,12 +6,15 @@
 
 #include "Renderer/Renderer.h"
 #include "GLCore/OpenGLDebug.h"
+#include "Application.h"
 
 namespace test
 {
   TestTransformations::TestTransformations()
       : m_Renderer2D(PicoEngine::Renderer::GetRenderer2D()),
-        m_CameraController(960.0f, 540.0f),
+        m_CameraController(
+            static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()),
+            static_cast<float>(PicoEngine::Application::Get().GetWindow().GetHeight())),
         m_Translation(200.0f, 200.0f, 0.0f),
         m_Rotation(0.0f, 0.0f, 0.0f),
         m_Scale(100.0f, 100.0f, 100.0f)
@@ -47,6 +50,11 @@ namespace test
     m_Renderer2D.DrawQuad(transform, *m_Texture);
 
     m_Renderer2D.EndScene();
+  }
+
+  void TestTransformations::OnEvent(PicoEngine::Event &event)
+  {
+    m_CameraController.OnEvent(event);
   }
 
   void TestTransformations::OnImGuiRender()

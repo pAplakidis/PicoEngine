@@ -6,12 +6,15 @@
 
 #include "Renderer/Renderer.h"
 #include "GLCore/OpenGLDebug.h"
+#include "Application.h"
 
 namespace test
 {
     TestTriangle::TestTriangle()
         : m_Renderer2D(PicoEngine::Renderer::GetRenderer2D()),
-          m_CameraController(960.0f, 540.0f),
+          m_CameraController(
+              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()),
+              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetHeight())),
           m_TranslationQ0(200.0f, 200.0f, 0.0f),
           m_TranslationQ1(500.0f, 200.0f, 0.0f),
           m_TranslationT0(350.0f, 200.0f, 0.0f)
@@ -49,6 +52,11 @@ namespace test
             Vec4{0.0f, 0.0f, 1.0f, 1.0f});
 
         m_Renderer2D.EndScene();
+    }
+
+    void TestTriangle::OnEvent(PicoEngine::Event &event)
+    {
+        m_CameraController.OnEvent(event);
     }
 
     void TestTriangle::OnImGuiRender()

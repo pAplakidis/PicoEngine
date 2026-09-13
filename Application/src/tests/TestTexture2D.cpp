@@ -6,12 +6,15 @@
 
 #include "Renderer/Renderer.h"
 #include "GLCore/OpenGLDebug.h"
+#include "Application.h"
 
 namespace test
 {
     TestTexture2D::TestTexture2D()
         : m_Renderer2D(PicoEngine::Renderer::GetRenderer2D()),
-          m_CameraController(960.0f, 540.0f),
+          m_CameraController(
+              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()),
+              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetHeight())),
           m_TranslationA(200.0f, 200.0f, 0.0f),
           m_TranslationB(400.0f, 200.0f, 0.0f)
     {
@@ -46,6 +49,11 @@ namespace test
             *m_Texture);
 
         m_Renderer2D.EndScene();
+    }
+
+    void TestTexture2D::OnEvent(PicoEngine::Event &event)
+    {
+        m_CameraController.OnEvent(event);
     }
 
     void TestTexture2D::OnImGuiRender()

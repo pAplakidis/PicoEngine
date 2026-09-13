@@ -1,19 +1,6 @@
+#include "Application.h"
+
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <string>
-
-#include "Event/ApplicationEvent.h"
-#include "Renderer/Renderer.h"
-#include "GLCore/OpenGLDebug.h"
-#include "Util/Log.h"
-#include "Util/Input.h"
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -25,144 +12,90 @@
 #include "tests/TestTransformations.h"
 #include "tests/TestTriangle.h"
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+class SandboxApplication : public PicoEngine::Application
 {
-  glViewport(0, 0, width, height);
-}
-
-void processInput(GLFWwindow *window)
-{
-  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, true);
-}
-
-int main(void)
-{
-  GLFWwindow *window;
-
-  /* Initialize the library */
-  if (!glfwInit())
-    return -1;
-
-  // create context with core profile (OpenGL 4.5)
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef PICOENGINE_DEBUG
-  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-#endif
-
-  /* Create a windowed mode window and its OpenGL context */
-  window = glfwCreateWindow(960, 540, "Application", NULL, NULL);
-
-  if (!window)
+public:
+  SandboxApplication()
   {
-    glfwTerminate();
-    return -1;
-  }
-
-  PicoEngine::Input::Init(window);
-
-  /* Make the window's context current */
-  glfwMakeContextCurrent(window);
-
-  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-  // synchronize without vsync
-  glfwSwapInterval(1);
-
-  glewExperimental = GL_TRUE;
-
-  if (glewInit() != GLEW_OK)
-  {
-    std::cerr << "Failed to initialize GLEW" << std::endl;
-    glfwTerminate();
-    return -1;
-  }
-
-  PicoEngine::Log::Init();
-#ifdef PICOENGINE_DEBUG
-  PicoEngine::EnableGLDebugging();
-#endif
-
-  PicoEngine::Renderer::Init();
-
-  LOG_INFO("OpenGL: {}",
-           reinterpret_cast<const char *>(glGetString(GL_VERSION)));
-  LOG_INFO("GLSL: {}", reinterpret_cast<const char *>(
-                           glGetString(GL_SHADING_LANGUAGE_VERSION)));
-
-  {
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
+    GLFWwindow *window = static_cast<GLFWwindow *>(GetWindow().GetNativeWindow());
 
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 450 core");
     ImGui::StyleColorsDark();
 
-    test::Test *currentTest = nullptr;
-    test::TestMenu *testMenu = new test::TestMenu(currentTest);
-    currentTest = testMenu;
+    m_TestMenu = new test::TestMenu(m_CurrentTest);
+    m_CurrentTest = m_TestMenu;
 
-    testMenu->RegisterTest<test::TestClearColor>("Clear Color");
-    testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
-    testMenu->RegisterTest<test::TestTriangle>("Triangle");
-    testMenu->RegisterTest<test::TestBatchRenderer2D>("2D Batch Stress Test");
-    testMenu->RegisterTest<test::TestTransformations>("Transformations Test");
-
-    float lastFrameTime = static_cast<float>(glfwGetTime());
-    while (!glfwWindowShouldClose(window))
-    {
-      float currentFrameTime = static_cast<float>(glfwGetTime());
-      float deltaTime = currentFrameTime - lastFrameTime;
-      lastFrameTime = currentFrameTime;
-
-      // input
-      processInput(window);
-
-      glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-      glClear(GL_COLOR_BUFFER_BIT);
-
-      ImGui_ImplOpenGL3_NewFrame();
-      ImGui_ImplGlfw_NewFrame();
-      ImGui::NewFrame();
-
-      if (currentTest)
-      {
-        currentTest->OnUpdate(deltaTime);
-        currentTest->OnRender();
-
-        ImGui::Begin("Test");
-
-        if (currentTest != testMenu && ImGui::Button("<-"))
-        {
-          delete currentTest;
-          currentTest = testMenu;
-        }
-
-        currentTest->OnImGuiRender();
-
-        ImGui::End();
-      }
-
-      ImGui::Render();
-      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-      glfwSwapBuffers(window);
-      glfwPollEvents();
-    }
-
-    delete currentTest;
-    if (currentTest != testMenu)
-    {
-      delete testMenu;
-    }
+    m_TestMenu->RegisterTest<test::TestClearColor>("Clear Color");
+    m_TestMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+    m_TestMenu->RegisterTest<test::TestTriangle>("Triangle");
+    m_TestMenu->RegisterTest<test::TestBatchRenderer2D>("2D Batch Stress Test");
+    m_TestMenu->RegisterTest<test::TestTransformations>("Transformations Test");
   }
 
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
-  glfwTerminate();
+  ~SandboxApplication() override
+  {
+    if (m_CurrentTest != m_TestMenu)
+      delete m_CurrentTest;
+    delete m_TestMenu;
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+  }
+
+protected:
+  void OnUpdate(float deltaTime) override
+  {
+    if (m_CurrentTest)
+      m_CurrentTest->OnUpdate(deltaTime);
+  }
+
+  void OnRender() override
+  {
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    if (m_CurrentTest)
+      m_CurrentTest->OnRender();
+  }
+
+  void OnImGuiRender() override
+  {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    if (m_CurrentTest)
+    {
+      ImGui::Begin("Test");
+
+      if (m_CurrentTest != m_TestMenu &&
+          ImGui::Button("<-"))
+      {
+        delete m_CurrentTest;
+        m_CurrentTest = m_TestMenu;
+      }
+
+      m_CurrentTest->OnImGuiRender();
+
+      ImGui::End();
+    }
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  }
+
+private:
+  test::Test *m_CurrentTest = nullptr;
+  test::TestMenu *m_TestMenu = nullptr;
+};
+
+int main()
+{
+  PicoEngine::Log::Init();
+  SandboxApplication app;
+  app.Run();
   return 0;
 }

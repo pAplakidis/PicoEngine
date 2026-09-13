@@ -7,14 +7,16 @@
 
 #include "Renderer/Renderer.h"
 #include "GLCore/OpenGLDebug.h"
+#include "Application.h"
 
 namespace test
 {
     TestBatchRenderer2D::TestBatchRenderer2D()
         : m_Renderer2D(PicoEngine::Renderer::GetRenderer2D()),
-          m_CameraController(960.0f, 540.0f)
+          m_CameraController(
+              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()),
+              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetHeight()))
     {
-
         m_MarioTexture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/mario.png");
         m_GoldDollarTexture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/gold-dollar.png");
     }
@@ -55,6 +57,11 @@ namespace test
         }
 
         m_Renderer2D.EndScene();
+    }
+
+    void TestBatchRenderer2D::OnEvent(PicoEngine::Event &event)
+    {
+        m_CameraController.OnEvent(event);
     }
 
     void TestBatchRenderer2D::OnImGuiRender()

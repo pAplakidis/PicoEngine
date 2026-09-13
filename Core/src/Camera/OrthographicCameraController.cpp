@@ -81,7 +81,7 @@ namespace PicoEngine
 
   bool OrthographicCameraController::OnWindowResized(WindowResizeEvent &event)
   {
-    if (event.GetHeight() == 0)
+    if (event.GetWidth() == 0 || event.GetHeight() == 0)
       return false;
 
     m_ViewportWidth = (float)event.GetWidth();

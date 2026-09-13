@@ -9,6 +9,7 @@
 #include "Renderer/Renderer2D.h"
 #include "Renderer/GL/Texture.h"
 #include "Camera/OrthographicCameraController.h"
+#include "Event/Event.h"
 
 namespace test
 {
@@ -20,6 +21,7 @@ namespace test
 
     void OnUpdate(float deltaTime) override;
     void OnRender() override;
+    void OnEvent(PicoEngine::Event &event) override;
     void OnImGuiRender() override;
 
   private:
