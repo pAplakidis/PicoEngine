@@ -13,11 +13,11 @@ namespace test
     TestTriangle::TestTriangle()
         : m_Renderer2D(PicoEngine::Renderer::GetRenderer2D()),
           m_CameraController(
-              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()),
+              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()) /
               static_cast<float>(PicoEngine::Application::Get().GetWindow().GetHeight())),
-          m_TranslationQ0(200.0f, 200.0f, 0.0f),
-          m_TranslationQ1(500.0f, 200.0f, 0.0f),
-          m_TranslationT0(350.0f, 200.0f, 0.0f)
+          m_TranslationQ0(-0.6f, 0.0f, 0.0f),
+          m_TranslationQ1(0.6f, 0.0f, 0.0f),
+          m_TranslationT0(0.0f, 0.0f, 0.0f)
     {
     }
 
@@ -39,16 +39,18 @@ namespace test
         m_Renderer2D.SetWireframeEnabled(m_WireframeEnabled);
 
         m_Renderer2D.DrawQuad(
-            glm::vec2(m_TranslationQ0.x, m_TranslationQ0.y),
-            glm::vec2(100.0f, 100.0f),
+            glm::vec2(m_TranslationQ0),
+            glm::vec2(0.4f, 0.4f),
             Vec4{1.0f, 0.0f, 0.0f, 1.0f});
+
         m_Renderer2D.DrawTriangle(
-            glm::vec2(m_TranslationT0.x, m_TranslationT0.y),
-            100.0f,
+            glm::vec2(m_TranslationT0),
+            0.4f,
             Vec4{0.0f, 1.0f, 0.0f, 1.0f});
+
         m_Renderer2D.DrawQuad(
-            glm::vec2(m_TranslationQ1.x, m_TranslationQ1.y),
-            glm::vec2(100.0f, 100.0f),
+            glm::vec2(m_TranslationQ1),
+            glm::vec2(0.4f, 0.4f),
             Vec4{0.0f, 0.0f, 1.0f, 1.0f});
 
         m_Renderer2D.EndScene();
@@ -61,9 +63,9 @@ namespace test
 
     void TestTriangle::OnImGuiRender()
     {
-        ImGui::SliderFloat3("Quad 0 Translation", &m_TranslationQ0.x, 0.0f, 960.0f);
-        ImGui::SliderFloat3("Triangle Translation", &m_TranslationT0.x, 0.0f, 960.0f);
-        ImGui::SliderFloat3("Quad 1 Translation", &m_TranslationQ1.x, 0.0f, 960.0f);
+        ImGui::SliderFloat3("Quad 0 Translation", &m_TranslationQ0.x, -2.0f, 2.0f);
+        ImGui::SliderFloat3("Triangle Translation", &m_TranslationT0.x, -2.0f, 2.0f);
+        ImGui::SliderFloat3("Quad 1 Translation", &m_TranslationQ1.x, -2.0f, 2.0f);
         ImGui::Checkbox("Wireframe Mode", &m_WireframeEnabled);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     }

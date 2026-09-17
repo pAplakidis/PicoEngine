@@ -24,6 +24,8 @@ namespace PicoEngine
     virtual void OnRender() {}
     virtual void OnImGuiRender() {}
 
+    virtual void OnAppEvent(Event &event) {}
+
   private:
     bool OnWindowClose(WindowCloseEvent &event);
     bool OnWindowResize(WindowResizeEvent &event);

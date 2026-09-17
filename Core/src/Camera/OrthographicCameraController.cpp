@@ -8,11 +8,13 @@
 namespace PicoEngine
 {
 
-  OrthographicCameraController::OrthographicCameraController(float width, float height)
-      : m_ViewportWidth(width),
-        m_ViewportHeight(height),
-        m_AspectRatio(width / height),
-        m_Camera(0.0f, width, 0.0f, height) // TODO: (-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel)
+  OrthographicCameraController::OrthographicCameraController(float aspectRatio)
+      : m_AspectRatio(aspectRatio),
+        m_Camera(
+            -m_AspectRatio * m_ZoomLevel,
+            m_AspectRatio * m_ZoomLevel,
+            -m_ZoomLevel,
+            m_ZoomLevel)
   {
   }
 
@@ -65,6 +67,12 @@ namespace PicoEngine
         });
   }
 
+  void OrthographicCameraController::SetAspectRatio(float aspectRatio)
+  {
+    m_AspectRatio = aspectRatio;
+    RecalculateProjection();
+  }
+
   void OrthographicCameraController::SetZoomLevel(float zoomLevel)
   {
     m_ZoomLevel = zoomLevel;
@@ -84,19 +92,16 @@ namespace PicoEngine
     if (event.GetWidth() == 0 || event.GetHeight() == 0)
       return false;
 
-    m_ViewportWidth = (float)event.GetWidth();
-    m_ViewportHeight = (float)event.GetHeight();
-    m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
-    RecalculateProjection();
+    SetAspectRatio((float)event.GetWidth() / (float)event.GetHeight());
     return false;
   }
 
   void OrthographicCameraController::RecalculateProjection()
   {
     m_Camera.SetProjection(
-        0.0f,
-        m_ViewportWidth * m_ZoomLevel,
-        0.0f,
-        m_ViewportHeight * m_ZoomLevel);
+        -m_AspectRatio * m_ZoomLevel,
+        m_AspectRatio * m_ZoomLevel,
+        -m_ZoomLevel,
+        m_ZoomLevel);
   }
 }

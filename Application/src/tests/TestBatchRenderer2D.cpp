@@ -14,7 +14,7 @@ namespace test
     TestBatchRenderer2D::TestBatchRenderer2D()
         : m_Renderer2D(PicoEngine::Renderer::GetRenderer2D()),
           m_CameraController(
-              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()),
+              static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()) /
               static_cast<float>(PicoEngine::Application::Get().GetWindow().GetHeight()))
     {
         m_MarioTexture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/mario.png");
@@ -39,18 +39,17 @@ namespace test
 
         constexpr uint32_t Columns = 100;
 
-        constexpr float QuadSize = 5.0f;
-        constexpr float Gap = 0.25f;
+        constexpr float QuadSize = 0.03f;
+        constexpr float Gap = 0.003f;
 
-        const uint32_t quadCount =
-            PicoEngine::Renderer2D::GetMaxQuads() + 8;
+        const uint32_t quadCount = PicoEngine::Renderer2D::GetMaxQuads() + 8;
 
         for (uint32_t i = 0; i < quadCount; i++)
         {
             const uint32_t column = i % Columns;
             const uint32_t row = i / Columns;
-            const float x = 20.0f + column * (QuadSize + Gap);
-            const float y = 10.0f + row * (QuadSize + Gap);
+            const float x = -1.65f + column * (QuadSize + Gap);
+            const float y = 0.95f - row * (QuadSize + Gap);
             const bool useMario = (column + row) % 2 == 0;
             const Texture &texture = useMario ? *m_MarioTexture : *m_GoldDollarTexture;
             m_Renderer2D.DrawQuad({x, y}, {QuadSize, QuadSize}, texture);

@@ -15,13 +15,15 @@ namespace PicoEngine
   class OrthographicCameraController
   {
   public:
-    // FIXME: don't use width and height, use aspect ratio instead (more dynamic)
-    OrthographicCameraController(float width, float height);
+    OrthographicCameraController(float aspectRatio);
 
     void OnUpdate(float deltaTime);
     void OnEvent(Event &event);
 
     OrthographicCamera &GetCamera() { return m_Camera; }
+
+    void SetAspectRatio(float aspectRatio);
+    float GetAspectRatio() { return m_AspectRatio; }
 
     void SetZoomLevel(float zoomLevel);
     float GetZoomLevel() const { return m_ZoomLevel; }
@@ -33,8 +35,6 @@ namespace PicoEngine
     void RecalculateProjection();
 
   private:
-    float m_ViewportWidth, m_ViewportHeight;
-
     float m_AspectRatio;
     float m_ZoomLevel = 1.0f;
 
@@ -42,7 +42,7 @@ namespace PicoEngine
     glm::vec3 m_CameraPosition{0.0f};
 
     bool m_IsPanning = false;
-    float m_PanSpeed = 1.0f;
+    float m_PanSpeed = 0.002f;
     glm::vec2 m_LastMousePosition{0.0f};
   };
 

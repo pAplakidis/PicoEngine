@@ -13,11 +13,11 @@ namespace test
   TestTransformations::TestTransformations()
       : m_Renderer2D(PicoEngine::Renderer::GetRenderer2D()),
         m_CameraController(
-            static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()),
+            static_cast<float>(PicoEngine::Application::Get().GetWindow().GetWidth()) /
             static_cast<float>(PicoEngine::Application::Get().GetWindow().GetHeight())),
-        m_Translation(200.0f, 200.0f, 0.0f),
+        m_Translation(0.0f, 0.0f, 0.0f),
         m_Rotation(0.0f, 0.0f, 0.0f),
-        m_Scale(100.0f, 100.0f, 100.0f)
+        m_Scale(0.5f, 0.5f, 1.0f)
   {
 
     m_Texture = std::make_unique<Texture>(APPLICATION_RESOURCES_PATH "textures/mario.png");
@@ -59,9 +59,9 @@ namespace test
 
   void TestTransformations::OnImGuiRender()
   {
-    ImGui::SliderFloat3("Translation", &m_Translation.x, 0.0f, 960.0f);
+    ImGui::SliderFloat3("Translation", &m_Translation.x, -2.0f, 2.0f);
     ImGui::SliderFloat("Rotation", &m_Rotation.z, -180.0f, 180.0f);
-    ImGui::SliderFloat2("Scale", &m_Scale.x, 10.0f, 1000.0f);
+    ImGui::SliderFloat2("Scale", &m_Scale.x, 0.1f, 2.0f);
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
   }
 

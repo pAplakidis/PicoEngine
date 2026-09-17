@@ -60,6 +60,9 @@ namespace PicoEngine
         {
           return OnWindowResize(event);
         });
+
+    if (!event.IsHandled())
+      OnAppEvent(event);
   }
 
   void Application::Run()
@@ -74,6 +77,15 @@ namespace PicoEngine
       {
         OnUpdate(dt);
         OnRender();
+
+        // TODO: use layers
+        // for (Layer* layer : m_LayerStack)
+        //   layer->OnUpdate(dt);
+        //
+        // ImGuiLayer->Begin();
+        // for (Layer* layer : m_LayerStack)
+        //   layer->OnImGuiRender();
+        // ImGuiLayer->End();
       }
 
       OnImGuiRender();

@@ -63,6 +63,8 @@ namespace PicoEngine
       return GetCategoryFlags() & category;
     }
 
+    bool IsHandled() const { return m_Handled; }
+
   protected:
     bool m_Handled = false;
   };
@@ -83,7 +85,7 @@ namespace PicoEngine
     {
       if (m_Event.GetEventType() == T::GetStaticType())
       {
-        m_Event.m_Handled = func(*(T *)&m_Event);
+        m_Event.m_Handled |= func(*(T *)&m_Event);
         return true;
       }
       return false;

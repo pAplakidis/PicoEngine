@@ -87,6 +87,12 @@ protected:
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   }
 
+  void OnAppEvent(PicoEngine::Event &event) override
+  {
+    if (m_CurrentTest)
+      m_CurrentTest->OnEvent(event);
+  }
+
 private:
   test::Test *m_CurrentTest = nullptr;
   test::TestMenu *m_TestMenu = nullptr;
