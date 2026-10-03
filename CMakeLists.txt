@@ -9,7 +9,7 @@ project(PicoEngine
 # C++ configuration
 # ---------------------------------------------------------------------------
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -196,6 +196,7 @@ add_library(Core STATIC
 target_include_directories(Core
   PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/entt/src"
 
   PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/src/vendor"
@@ -288,6 +289,88 @@ target_compile_definitions(PicoEngine
     APPLICATION_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Application/res/"
 )
 
+# ---------------------------------------------------------------------------
+# CaptainClaw
+# ---------------------------------------------------------------------------
+
+file(GLOB_RECURSE CAPTAIN_CLAW_SOURCES
+  CONFIGURE_DEPENDS
+
+  "${CMAKE_CURRENT_SOURCE_DIR}/CaptainClaw/src/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/CaptainClaw/src/*.c"
+)
+
+file(GLOB_RECURSE CAPTAIN_CLAW_HEADERS
+  CONFIGURE_DEPENDS
+
+  "${CMAKE_CURRENT_SOURCE_DIR}/CaptainClaw/src/*.h"
+  "${CMAKE_CURRENT_SOURCE_DIR}/CaptainClaw/src/*.hpp"
+)
+
+add_executable(CaptainClaw
+  ${CAPTAIN_CLAW_SOURCES}
+  ${CAPTAIN_CLAW_HEADERS}
+)
+
+target_link_libraries(CaptainClaw
+  PRIVATE
+    Core
+)
+
+target_include_directories(CaptainClaw
+  PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CaptainClaw/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/src/vendor"
+)
+
+target_compile_definitions(CaptainClaw
+  PRIVATE
+    CAPTAINCLAW_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/CaptainClaw/res/"
+)
+
+
+# ---------------------------------------------------------------------------
+# Mario
+# ---------------------------------------------------------------------------
+
+
+file(GLOB_RECURSE MARIO_SOURCES
+  CONFIGURE_DEPENDS
+
+  "${CMAKE_CURRENT_SOURCE_DIR}/Mario/src/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Mario/src/*.c"
+)
+
+file(GLOB_RECURSE MARIO_HEADERS
+  CONFIGURE_DEPENDS
+
+  "${CMAKE_CURRENT_SOURCE_DIR}/Mario/src/*.h"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Mario/src/*.hpp"
+)
+
+add_executable(Mario
+  ${MARIO_SOURCES}
+  ${MARIO_HEADERS}
+)
+
+target_link_libraries(Mario
+  PRIVATE
+    Core
+)
+
+target_include_directories(Mario
+  PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Mario/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/src/vendor"
+)
+
+target_compile_definitions(Mario
+  PRIVATE
+    MARIO_RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Mario/res/"
+)
+
 
 # ---------------------------------------------------------------------------
 # Compiler options
@@ -305,6 +388,16 @@ if(MSVC)
     /permissive-
   )
 
+  target_compile_options(CaptainClaw PRIVATE
+    /W4
+    /permissive-
+  )
+
+  target_compile_options(Mario PRIVATE
+    /W4
+    /permissive-
+  )
+
   target_compile_definitions(Core PUBLIC
     _CRT_SECURE_NO_WARNINGS
   )
@@ -318,6 +411,18 @@ else()
   )
 
   target_compile_options(PicoEngine PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+  )
+
+  target_compile_options(CaptainClaw PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+  )
+
+  target_compile_options(Mario PRIVATE
     -Wall
     -Wextra
     -Wpedantic
@@ -342,6 +447,18 @@ source_group(
   TREE "${CMAKE_CURRENT_SOURCE_DIR}/Application"
   PREFIX "Application"
   FILES ${APPLICATION_SOURCES} ${APPLICATION_HEADERS}
+)
+
+source_group(
+  TREE "${CMAKE_CURRENT_SOURCE_DIR}/CaptainClaw"
+  PREFIX "CaptainClaw"
+  FILES ${CAPTAIN_CLAW_SOURCES} ${CAPTAIN_CLAW_HEADERS}
+)
+
+source_group(
+  TREE "${CMAKE_CURRENT_SOURCE_DIR}/Mario"
+  PREFIX "Mario"
+  FILES ${MARIO_SOURCES} ${MARIO_HEADERS}
 )
 
 # When opening the generated solution in Visual Studio,

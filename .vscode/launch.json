@@ -13,10 +13,38 @@
       "externalConsole": false,
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
-      "preLaunchTask": "Build Debug"
-    },
-    {
-      "name": "Run PicoEngine (Release)",
+       "preLaunchTask": "Build Debug"
+     },
+     {
+      "name": "Debug CaptainClaw",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/debug/bin/CaptainClaw",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "Build CaptainClaw Debug"
+     },
+     {
+      "name": "Debug Mario",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/debug/bin/Mario",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "Build Mario Debug"
+     },
+     {
+       "name": "Run PicoEngine (Release)",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/release/bin/PicoEngine",
@@ -27,7 +55,35 @@
       "externalConsole": false,
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
-      "preLaunchTask": "Build Release"
-    }
+       "preLaunchTask": "Build Release"
+     },
+     {
+      "name": "Run CaptainClaw (Release)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/release/bin/CaptainClaw",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "Build CaptainClaw Release"
+     },
+     {
+      "name": "Run Mario (Release)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/release/bin/Mario",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "Build Mario Release"
+     }
   ]
 }

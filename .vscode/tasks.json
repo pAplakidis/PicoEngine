@@ -29,6 +29,34 @@
       "problemMatcher": "$gcc"
     },
     {
+      "label": "Build CaptainClaw Debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "${workspaceFolder}/build/debug",
+        "--target",
+        "CaptainClaw",
+        "-j"
+      ],
+      "dependsOn": "Configure Debug",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Build Mario Debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "${workspaceFolder}/build/debug",
+        "--target",
+        "Mario",
+        "-j"
+      ],
+      "dependsOn": "Configure Debug",
+      "problemMatcher": "$gcc"
+    },
+    {
       "label": "Configure Release",
       "type": "shell",
       "command": "cmake",
@@ -50,6 +78,34 @@
       "args": [
         "--build",
         "${workspaceFolder}/build/release",
+        "-j"
+      ],
+      "dependsOn": "Configure Release",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Build CaptainClaw Release",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "${workspaceFolder}/build/release",
+        "--target",
+        "CaptainClaw",
+        "-j"
+      ],
+      "dependsOn": "Configure Release",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Build Mario Release",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "${workspaceFolder}/build/release",
+        "--target",
+        "Mario",
         "-j"
       ],
       "dependsOn": "Configure Release",
