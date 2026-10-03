@@ -1,5 +1,3 @@
-// PrimitiveFactory.h
-
 #pragma once
 
 #include <array>
