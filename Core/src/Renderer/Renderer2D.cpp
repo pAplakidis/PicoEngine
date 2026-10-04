@@ -132,6 +132,58 @@ namespace PicoEngine
     m_Indices.insert(m_Indices.end(), {offset + 0, offset + 1, offset + 2, offset + 2, offset + 3, offset + 0});
   }
 
+  void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const SubTexture2D &subTexture)
+  {
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f)) *
+                          glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+    DrawQuad(transform, subTexture);
+  }
+
+  void Renderer2D::DrawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &size, const SubTexture2D &subTexture)
+  {
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f)) *
+                          glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f)) *
+                          glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+    DrawQuad(transform, subTexture);
+  }
+
+  void Renderer2D::DrawQuad(const glm::mat4 &transform, const SubTexture2D &subTexture)
+  {
+    constexpr uint32_t VertexCount = 4;
+    constexpr uint32_t IndexCount = 6;
+
+    if (m_Vertices.size() + VertexCount > MaxVertices || m_Indices.size() + IndexCount > MaxIndices)
+    {
+      Flush();
+    }
+
+    const auto &texture = subTexture.GetTexture();
+    const Vec2 *texCoords = subTexture.GetTexCoords();
+
+    float textureIndex = GetTextureIndex(*texture);
+
+    uint32_t offset = static_cast<uint32_t>(m_Vertices.size());
+
+    static constexpr glm::vec4 localPositions[4] = {
+        {-0.5f, -0.5f, 0.0f, 1.0f},
+        {0.5f, -0.5f, 0.0f, 1.0f},
+        {0.5f, 0.5f, 0.0f, 1.0f},
+        {-0.5f, 0.5f, 0.0f, 1.0f}};
+
+    for (int i = 0; i < 4; i++)
+    {
+      glm::vec4 transformed = transform * localPositions[i];
+
+      m_Vertices.push_back({{transformed.x, transformed.y, transformed.z},
+                            Vec4{1.0f, 1.0f, 1.0f, 1.0f},
+                            texCoords[i],
+                            textureIndex});
+    }
+
+    m_Indices.insert(m_Indices.end(), {offset + 0, offset + 1, offset + 2,
+                                       offset + 2, offset + 3, offset + 0});
+  }
+
   void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Texture &texture)
   {
     glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f)) *
@@ -161,13 +213,16 @@ namespace PicoEngine
 
     uint32_t offset = static_cast<uint32_t>(m_Vertices.size());
 
-    static constexpr glm::vec4 localPositions[4] = {{-0.5f, -0.5f, 0.0f, 1.0f},
-                                                    {0.5f, -0.5f, 0.0f, 1.0f},
-                                                    {0.5f, 0.5f, 0.0f, 1.0f},
-                                                    {-0.5f, 0.5f, 0.0f, 1.0f}};
-
+    static constexpr glm::vec4 localPositions[4] = {
+        {-0.5f, -0.5f, 0.0f, 1.0f},
+        {0.5f, -0.5f, 0.0f, 1.0f},
+        {0.5f, 0.5f, 0.0f, 1.0f},
+        {-0.5f, 0.5f, 0.0f, 1.0f}};
     static constexpr Vec2 texCoords[4] = {
-        {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
+        {0.0f, 0.0f},  // bottom left
+        {1.0f, 0.0f},  // bottom right
+        {1.0f, 1.0f},  // top right
+        {0.0f, 1.0f}}; // top left
 
     for (int i = 0; i < 4; i++)
     {

@@ -12,6 +12,7 @@
 #include "GL/IndexBuffer.h"
 #include "GL/Shader.h"
 #include "GL/Texture.h"
+#include "GL/SubTexture2D.h"
 #include "Camera/OrthographicCamera.h"
 
 namespace PicoEngine
@@ -32,6 +33,10 @@ namespace PicoEngine
     void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Vec4 &color);
     void DrawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &size, const Vec4 &color);
     void DrawQuad(const glm::mat4 &transform, const Vec4 &color);
+
+    void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const SubTexture2D &subTexture);
+    void DrawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &size, const SubTexture2D &subTexture);
+    void DrawQuad(const glm::mat4 &transform, const SubTexture2D &subTexture);
 
     void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Texture &texture);
     void DrawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &size, const Texture &texture);

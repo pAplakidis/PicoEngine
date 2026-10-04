@@ -25,9 +25,16 @@ namespace PicoEngine
     for (auto entity : m_Registry.view<TransformComponent, SpriteRendererComponent>())
     {
       auto [transform, sprite] = m_Registry.get<TransformComponent, SpriteRendererComponent>(entity);
-      renderer2D.DrawQuad(transform.GetPosition(), transform.GetRotation(), transform.GetScale(), *sprite.GetTexture());
-    }
+      if (sprite.HasSubTexture())
+      {
+        renderer2D.DrawQuad(transform.GetTransform(), *sprite.GetSubTexture());
+      }
+      else if (sprite.GetTexture())
+      {
+        renderer2D.DrawQuad(transform.GetTransform(), *sprite.GetTexture());
+      }
 
-    renderer2D.EndScene();
+      renderer2D.EndScene();
+    }
   }
 }
