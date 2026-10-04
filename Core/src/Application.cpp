@@ -84,9 +84,6 @@ namespace PicoEngine
 
       if (!m_Minimized)
       {
-        // OnUpdate(dt);
-        // OnRender();
-
         PicoEngine::RendererCommand::SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         PicoEngine::RendererCommand::Clear();
 
@@ -96,13 +93,9 @@ namespace PicoEngine
         for (Layer *layer : m_LayerStack)
           layer->OnRender();
 
-        // ImGuiLayer->Begin();
-        // for (Layer* layer : m_LayerStack)
-        //   layer->OnImGuiRender();
-        // ImGuiLayer->End();
+        for (Layer *layer : m_LayerStack)
+          layer->OnImGuiRender();
       }
-
-      // OnImGuiRender();
 
       m_Window->OnUpdate();
     }
