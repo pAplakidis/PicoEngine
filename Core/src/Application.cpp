@@ -1,6 +1,9 @@
 #include "Application.h"
 
+#include <GL/glew.h>
+
 #include "Renderer/Renderer.h"
+#include "Renderer/RendererCommand.h"
 #include "Util/Input.h"
 #include "Util/Log.h"
 #include "GLCore/OpenGLDebug.h"
@@ -49,6 +52,8 @@ namespace PicoEngine
   {
     EventDispatcher dispatcher(event);
 
+    LOG_CORE_TRACE("{0}", event.ToString());
+
     dispatcher.Dispatch<WindowCloseEvent>(
         [this](WindowCloseEvent &event)
         {
@@ -61,8 +66,12 @@ namespace PicoEngine
           return OnWindowResize(event);
         });
 
-    if (!event.IsHandled())
-      OnAppEvent(event);
+    for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+    {
+      (*--it)->OnEvent(event);
+      if (event.IsHandled())
+        break;
+    }
   }
 
   void Application::Run()
@@ -75,23 +84,38 @@ namespace PicoEngine
 
       if (!m_Minimized)
       {
-        OnUpdate(dt);
-        OnRender();
+        // OnUpdate(dt);
+        // OnRender();
 
-        // TODO: use layers
-        // for (Layer* layer : m_LayerStack)
-        //   layer->OnUpdate(dt);
-        //
+        PicoEngine::RendererCommand::SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        PicoEngine::RendererCommand::Clear();
+
+        for (Layer *layer : m_LayerStack)
+          layer->OnUpdate(dt);
+
+        for (Layer *layer : m_LayerStack)
+          layer->OnRender();
+
         // ImGuiLayer->Begin();
         // for (Layer* layer : m_LayerStack)
         //   layer->OnImGuiRender();
         // ImGuiLayer->End();
       }
 
-      OnImGuiRender();
+      // OnImGuiRender();
 
       m_Window->OnUpdate();
     }
+  }
+
+  void Application::PushLayer(Layer *layer)
+  {
+    m_LayerStack.PushLayer(layer);
+  }
+
+  void Application::PushOverlay(Layer *overlay)
+  {
+    m_LayerStack.PushOverlay(overlay);
   }
 
   Application &Application::Get() { return *s_Instance; }

@@ -4,6 +4,8 @@
 
 #include "Window.h"
 #include "Event/ApplicationEvent.h"
+#include "LayerStack.h"
+#include "Layer.h"
 
 namespace PicoEngine
 {
@@ -15,6 +17,9 @@ namespace PicoEngine
 
     void Run();
     void OnEvent(Event &event);
+
+    void PushLayer(Layer *layer);
+    void PushOverlay(Layer *overlay);
 
     Window &GetWindow() { return *m_Window; }
     static Application &Get();
@@ -35,6 +40,8 @@ namespace PicoEngine
 
     bool m_Running = true;
     bool m_Minimized = false;
+
+    LayerStack m_LayerStack;
 
     float m_LastFrameTime = 0.0f;
 
