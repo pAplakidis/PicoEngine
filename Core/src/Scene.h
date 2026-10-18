@@ -5,7 +5,6 @@
 
 #include "Entity.h"
 #include "Renderer/Renderer2D.h"
-#include "Camera/OrthographicCamera.h"
 
 namespace PicoEngine
 {
@@ -15,6 +14,7 @@ namespace PicoEngine
   // Game/Runtime update
   // Physics update
   // Rendering traversal
+  // TODO: scene should eventually own the TileMap
   class Scene
   {
   public:
@@ -25,7 +25,7 @@ namespace PicoEngine
     void DestroyEntity(Entity entity);
 
     void OnUpdate(float deltaTime);
-    void OnRender(OrthographicCamera &camera, Renderer2D &renderer2D);
+    void Render(Renderer2D &renderer2D);
 
   private:
     entt::registry m_Registry;

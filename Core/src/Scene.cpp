@@ -18,10 +18,8 @@ namespace PicoEngine
 
   void Scene::OnUpdate(float deltaTime) {}
 
-  void Scene::OnRender(OrthographicCamera &camera, Renderer2D &renderer2D)
+  void Scene::Render(Renderer2D &renderer2D)
   {
-    renderer2D.BeginScene(camera);
-
     for (auto entity : m_Registry.view<TransformComponent, SpriteRendererComponent>())
     {
       auto [transform, sprite] = m_Registry.get<TransformComponent, SpriteRendererComponent>(entity);
@@ -33,8 +31,6 @@ namespace PicoEngine
       {
         renderer2D.DrawQuad(transform.GetTransform(), *sprite.GetTexture());
       }
-
-      renderer2D.EndScene();
     }
   }
 }
