@@ -12,6 +12,7 @@
 
 #include "Core/src/Component/SpriteRendererComponent.h"
 #include "Core/src/Component/TransformComponent.h"
+#include "Core/src/Component/ScriptComponent.h"
 
 #include "Core/src/Renderer/Renderer.h"
 #include "Core/src/Renderer/Renderer2D.h"
@@ -20,6 +21,7 @@
 
 #include "TileSet.h"
 #include "TileMap.h"
+#include "MarioScript.h"
 
 // TODO: add player and enemies spawn here
 static constexpr const char *Level1Map =
@@ -85,24 +87,37 @@ public:
     // Render player
     PicoEngine::Entity mario = m_Scene.CreateEntity("Mario");
     mario.AddComponent<PicoEngine::SpriteRendererComponent>(m_MarioSubTexture);
-    auto &transform = mario.GetComponent<PicoEngine::TransformComponent>();
-    transform.SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
-    transform.SetRotation(0.0f);
+    mario.AddComponent<PicoEngine::ScriptComponent>(MarioScript::Setup, MarioScript::Loop);
+
+    // TODO:
+    // give ScriptComponent a templated helper : auto &script = mario.AddComponent<ScriptComponent>();
+    // script.Bind<MarioScript>();
+    // Then MarioScript could simply be : class MarioScript
+    // {
+    // public:
+    //   void Setup(PicoEngine::Entity entity)
+    //   {
+    //   }
+
+    //   void Loop(PicoEngine::Entity entity, float dt)
+    //   {
+    //   }
+    // };
 
     // Create map (TODO: add tilemap to Scene init, not game init)
 
     // Create enemies
   }
 
-  void OnDetach() override
+  void
+  OnDetach() override
   {
   }
 
   void OnUpdate(float deltaTime) override
   {
     m_CameraController.OnUpdate(deltaTime);
-
-    // TODO: m_Scene.OnUpdate(deltaTime);
+    m_Scene.OnUpdate(deltaTime);
   }
 
   void OnRender() override
@@ -112,7 +127,7 @@ public:
     PicoEngine::RendererCommand::SetClearColor(0.36f, 0.67f, 1.0f, 1.0f);
     PicoEngine::RendererCommand::Clear();
 
-    m_TileMap.Render(m_Renderer2D, m_TileSet);
+    m_TileMap.Render(m_Renderer2D, m_TileSet); // TODO: this should be inside Scene
     m_Scene.Render(m_Renderer2D);
 
     m_Renderer2D.EndScene();

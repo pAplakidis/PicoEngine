@@ -3,6 +3,7 @@
 #include "Component/TagComponent.h"
 #include "Component/TransformComponent.h"
 #include "Component/SpriteRendererComponent.h"
+#include "Component/ScriptComponent.h"
 
 namespace PicoEngine
 {
@@ -16,7 +17,32 @@ namespace PicoEngine
 
   void Scene::DestroyEntity(Entity entity) {}
 
-  void Scene::OnUpdate(float deltaTime) {}
+  void Scene::OnUpdate(float deltaTime)
+  {
+    auto view = m_Registry.view<ScriptComponent>();
+
+    for (auto entityHandle : view)
+    {
+      auto &script = m_Registry.get<ScriptComponent>(entityHandle);
+
+      Entity entity(entityHandle, this);
+
+      if (!script.IsInitialized())
+      {
+        if (script.Setup)
+        {
+          script.Setup(entity);
+        }
+
+        script.Initialize();
+      }
+
+      if (script.Loop)
+      {
+        script.Loop(entity, deltaTime);
+      }
+    }
+  }
 
   void Scene::Render(Renderer2D &renderer2D)
   {
