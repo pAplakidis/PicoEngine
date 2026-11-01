@@ -5,6 +5,7 @@
 
 #include "Entity.h"
 #include "Renderer/Renderer2D.h"
+#include "Systems/AnimationSystem.h"
 
 namespace PicoEngine
 {
@@ -29,6 +30,7 @@ namespace PicoEngine
 
   private:
     entt::registry m_Registry;
+    AnimationSystem m_AnimationSystem;
 
     friend class Entity;
   };

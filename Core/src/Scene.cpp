@@ -23,10 +23,11 @@ namespace PicoEngine
 
     for (auto entityHandle : view)
     {
-      auto &script = m_Registry.get<ScriptComponent>(entityHandle);
-
       Entity entity(entityHandle, this);
 
+      // TODO: move to scripting system class
+      // update scripting component
+      auto &script = m_Registry.get<ScriptComponent>(entityHandle);
       if (!script.IsInitialized())
       {
         if (script.Setup)
@@ -36,11 +37,12 @@ namespace PicoEngine
 
         script.Initialize();
       }
-
       if (script.Loop)
       {
         script.Loop(entity, deltaTime);
       }
+
+      m_AnimationSystem.Update(m_Registry, deltaTime);
     }
   }
 

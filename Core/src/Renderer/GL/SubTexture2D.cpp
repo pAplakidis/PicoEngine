@@ -28,15 +28,14 @@ namespace PicoEngine
 
     std::shared_ptr<SubTexture2D> SubTexture2D::CreateFromPixels(const std::shared_ptr<Texture> &texture, const glm::vec2 &min, const glm::vec2 &max)
     {
-        glm::vec2 normalizedMin = {
-            min.x / static_cast<float>(texture->GetWidth()),
-            min.y / static_cast<float>(texture->GetHeight())};
-        glm::vec2 normalizedMax = {
-            max.x / static_cast<float>(texture->GetWidth()),
-            max.y / static_cast<float>(texture->GetHeight())};
-        return std::make_shared<SubTexture2D>(
-            texture,
-            normalizedMin,
-            normalizedMax);
+        const float width = static_cast<float>(texture->GetWidth());
+        const float height = static_cast<float>(texture->GetHeight());
+
+        // Input coordinates have their origin at the top-left.
+        // Convert them to OpenGL texture coordinates.
+        glm::vec2 normalizedMin = {min.x / width, 1.0f - max.y / height};
+        glm::vec2 normalizedMax = {max.x / width, 1.0f - min.y / height};
+
+        return std::make_shared<SubTexture2D>(texture, normalizedMin, normalizedMax);
     }
 }

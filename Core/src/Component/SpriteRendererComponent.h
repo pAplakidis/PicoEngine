@@ -19,18 +19,23 @@ namespace PicoEngine
     }
 
     SpriteRendererComponent(const std::shared_ptr<SubTexture2D> &subTexture)
-        : m_SubTexture(subTexture),
-          m_Texture(subTexture->GetTexture())
+        : m_Texture(subTexture->GetTexture()),
+          m_SubTexture(subTexture)
     {
     }
 
-    std::shared_ptr<Texture> GetTexture() { return m_Texture; }
     const std::shared_ptr<SubTexture2D> &GetSubTexture() const { return m_SubTexture; }
+    void SetSubTexture(const std::shared_ptr<SubTexture2D> &subTexture)
+    {
+      m_SubTexture = subTexture;
+      m_Texture = subTexture ? subTexture->GetTexture() : nullptr;
+    }
     bool HasSubTexture() const { return m_SubTexture != nullptr; }
 
-    glm::vec4 GetColor() { return m_Color; }
-
+    std::shared_ptr<Texture> GetTexture() { return m_Texture; }
     void SetTexture(const std::shared_ptr<Texture> &texture) { m_Texture = texture; }
+
+    glm::vec4 GetColor() { return m_Color; }
     void SetColor(const glm::vec4 &color) { m_Color = color; }
 
   private:

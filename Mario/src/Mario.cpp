@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include <imgui/imgui.h>
+#include <array>
 
 #include "Core/src/Scene.h"
 #include "Core/src/Entity.h"
@@ -13,11 +14,14 @@
 #include "Core/src/Component/SpriteRendererComponent.h"
 #include "Core/src/Component/TransformComponent.h"
 #include "Core/src/Component/ScriptComponent.h"
+#include "Core/src/Component/AnimatorComponent.h"
 
 #include "Core/src/Renderer/Renderer.h"
 #include "Core/src/Renderer/Renderer2D.h"
 #include "Core/src/Renderer/RendererCommand.h"
 #include "Core/src/Renderer/GL/Texture.h"
+
+#include "Core/src/Asssets/AnimationClip.h"
 
 #include "TileSet.h"
 #include "TileMap.h"
@@ -46,12 +50,88 @@ public:
             static_cast<float>(PicoEngine::Application::Get().GetWindow().GetHeight())),
         m_TileMap(Level1Map)
   {
+    // Load sprite sheets
     m_WorldSpriteSheet = std::make_shared<Texture>(MARIO_RESOURCES_PATH "textures/world_tileset.png");
     m_ItemsSpriteSheet = std::make_shared<Texture>(MARIO_RESOURCES_PATH "textures/items-objects.png");
-    m_CharactersSpriteSheet = std::make_shared<Texture>(MARIO_RESOURCES_PATH "textures/characters.png");
-    m_MarioSubTexture = PicoEngine::SubTexture2D::CreateFromCoords(m_CharactersSpriteSheet, {16, 0}, {16.12, 33}, {1, 1});
+    m_CharactersSpriteSheet = std::make_shared<Texture>(MARIO_RESOURCES_PATH "textures/mario_bros.png");
 
-    // init tiles
+    // setup mario subtextures
+    struct SpriteRect
+    {
+      float x, y, width, height;
+    };
+
+    // TODO: move to a json file or something, and load it at runtime
+    // Small Mario
+    constexpr std::array<SpriteRect, 11> SmallRects{{{178, 32, 12, 16}, // Standing
+                                                     {80, 32, 15, 16},  // Walking 1
+                                                     {96, 32, 16, 16},  // Walking 2
+                                                     {112, 32, 16, 16}, // Walking 3
+                                                     {144, 32, 16, 16}, // Jumping
+                                                     {130, 32, 14, 16}, // Turning
+                                                     {160, 32, 15, 16},
+                                                     {320, 8, 16, 24},
+                                                     {241, 33, 16, 16},
+                                                     {194, 32, 12, 16},
+                                                     {210, 33, 12, 16}}};
+
+    // Big Mario
+    constexpr std::array<SpriteRect, 11> BigRects{{{176, 0, 16, 32},
+                                                   {81, 0, 16, 32},
+                                                   {97, 0, 15, 32},
+                                                   {113, 0, 15, 32},
+                                                   {144, 0, 16, 32},
+                                                   {128, 0, 16, 32},
+                                                   {336, 0, 16, 32},
+                                                   {160, 10, 16, 22},
+                                                   {272, 2, 16, 29},
+                                                   {193, 2, 16, 29},
+                                                   {209, 2, 16, 29}}};
+
+    // Fire Mario
+    constexpr std::array<SpriteRect, 11> FireRects{{{176, 48, 16, 32},
+                                                    {81, 48, 16, 32},
+                                                    {97, 48, 15, 32},
+                                                    {113, 48, 15, 32},
+                                                    {144, 48, 16, 32},
+                                                    {128, 48, 16, 32},
+                                                    {336, 48, 16, 32},
+                                                    {160, 58, 16, 22},
+                                                    {272, 50, 16, 29},
+                                                    {193, 50, 16, 29},
+                                                    {209, 50, 16, 29}}};
+
+    // Helper to create a subtexture from a pixel rectangle.
+    const auto makeFrame = [this](const SpriteRect &r)
+    {
+      return PicoEngine::SubTexture2D::CreateFromPixels(m_CharactersSpriteSheet, {r.x, r.y}, {r.x + r.width, r.y + r.height});
+    };
+
+    // Load all Mario frames.
+    for (size_t i = 0; i < SmallRects.size(); ++i)
+    {
+      m_MarioSmallFrames[i] = makeFrame(SmallRects[i]);
+      m_MarioBigFrames[i] = makeFrame(BigRects[i]);
+      m_MarioFireFrames[i] = makeFrame(FireRects[i]);
+    }
+
+    // TODO: add AnimationController that holds the map of named clips
+    // Make animation clips for Mario
+    m_IdleAnimationClip = std::make_shared<PicoEngine::AnimationClip>("Idle", true);
+    m_IdleAnimationClip->AddFrame(m_MarioSmallFrames[0], 0.12f);
+
+    m_WalkingAnimationClip = std::make_shared<PicoEngine::AnimationClip>("Walking", true);
+    m_WalkingAnimationClip->AddFrame(m_MarioSmallFrames[1], 0.12f);
+    m_WalkingAnimationClip->AddFrame(m_MarioSmallFrames[2], 0.12f);
+    m_WalkingAnimationClip->AddFrame(m_MarioSmallFrames[3], 0.12f);
+
+    m_JumpingAnimationClip = std::make_shared<PicoEngine::AnimationClip>("Jumping", false);
+    m_JumpingAnimationClip->AddFrame(m_MarioSmallFrames[4], 0.12f);
+
+    m_CameraController.SetZoomLevel(10.0f);
+
+    // init world tiles
+    // TODO: make collidable
     constexpr glm::vec2 TileSize{16.0f, 16.0f};
 
     m_TileSet.AddTile(TileType::GroundTop, PicoEngine::SubTexture2D::CreateFromCoords(m_WorldSpriteSheet, {0, 0}, TileSize));
@@ -86,8 +166,24 @@ public:
   {
     // Render player
     PicoEngine::Entity mario = m_Scene.CreateEntity("Mario");
-    mario.AddComponent<PicoEngine::SpriteRendererComponent>(m_MarioSubTexture);
-    mario.AddComponent<PicoEngine::ScriptComponent>(MarioScript::Setup, MarioScript::Loop);
+    mario.AddComponent<PicoEngine::SpriteRendererComponent>(m_MarioSmallFrames[0]);
+
+    auto &animator = mario.AddComponent<PicoEngine::AnimatorComponent>();
+    animator.AddAnimation("Idle", m_IdleAnimationClip);
+    animator.AddAnimation("Walking", m_WalkingAnimationClip);
+    animator.AddAnimation("Jumping", m_JumpingAnimationClip);
+    animator.Play("Idle");
+
+    auto marioScript = std::make_shared<MarioScript>();
+    mario.AddComponent<PicoEngine::ScriptComponent>(
+        [marioScript](PicoEngine::Entity entity)
+        {
+          marioScript->Setup(entity);
+        },
+        [marioScript](PicoEngine::Entity entity, float deltaTime)
+        {
+          marioScript->Loop(entity, deltaTime);
+        });
 
     // TODO:
     // give ScriptComponent a templated helper : auto &script = mario.AddComponent<ScriptComponent>();
@@ -167,7 +263,15 @@ private:
   std::shared_ptr<Texture> m_WorldSpriteSheet;
   std::shared_ptr<Texture> m_ItemsSpriteSheet;
   std::shared_ptr<Texture> m_CharactersSpriteSheet;
-  std::shared_ptr<PicoEngine::SubTexture2D> m_MarioSubTexture;
+
+  // TODO: MarioBigFireFrames
+  std::array<std::shared_ptr<PicoEngine::SubTexture2D>, 11> m_MarioSmallFrames;
+  std::array<std::shared_ptr<PicoEngine::SubTexture2D>, 11> m_MarioBigFrames;
+  std::array<std::shared_ptr<PicoEngine::SubTexture2D>, 11> m_MarioFireFrames;
+
+  std::shared_ptr<PicoEngine::AnimationClip> m_IdleAnimationClip;
+  std::shared_ptr<PicoEngine::AnimationClip> m_WalkingAnimationClip;
+  std::shared_ptr<PicoEngine::AnimationClip> m_JumpingAnimationClip;
 
   TileSet m_TileSet;
   TileMap m_TileMap;
