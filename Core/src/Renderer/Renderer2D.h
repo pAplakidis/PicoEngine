@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <stdint.h>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
@@ -17,6 +18,7 @@
 
 namespace PicoEngine
 {
+
   class Renderer2D
   {
   public:
@@ -47,6 +49,19 @@ namespace PicoEngine
     bool IsWireframeEnabled() { return s_WireframeEnabled; }
     void SetWireframeEnabled(bool enabled) { s_WireframeEnabled = enabled; }
 
+    struct Statistics
+    {
+      uint32_t DrawCalls = 0;
+      uint32_t QuadCount = 0;
+      uint32_t TriangleCount = 0;
+
+      uint32_t GetTotalVertexCount() { return QuadCount * 4 + TriangleCount * 3; }
+      uint32_t GetTotalIndexCount() { return QuadCount * 6 + TriangleCount * 3; }
+    };
+
+    static Statistics GetStats();
+    static void ResetStats();
+
   private:
     void Flush();
     float GetTextureIndex(const Texture &texture);
@@ -73,5 +88,6 @@ namespace PicoEngine
     glm::mat4 m_Transform{1.0f};
 
     static bool s_WireframeEnabled;
+    static Statistics s_Stats;
   };
 }

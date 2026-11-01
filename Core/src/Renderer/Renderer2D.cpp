@@ -8,6 +8,7 @@
 namespace PicoEngine
 {
   bool Renderer2D::s_WireframeEnabled = false;
+  Renderer2D::Statistics Renderer2D::s_Stats{};
 
   // public
 
@@ -88,6 +89,7 @@ namespace PicoEngine
     m_Vertices.push_back({{position.x + halfSize, position.y - halfSize, 0.0f}, color, {1.0f, 0.0f}, 0.0f});
     m_Vertices.push_back({{position.x - halfSize, position.y - halfSize, 0.0f}, color, {0.0f, 0.0f}, 0.0f});
     m_Indices.insert(m_Indices.end(), {offset + 0, offset + 1, offset + 2});
+    s_Stats.TriangleCount++;
   }
 
   void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Vec4 &color)
@@ -109,7 +111,6 @@ namespace PicoEngine
   {
     constexpr uint32_t VertexCount = 4;
     constexpr uint32_t IndexCount = 6;
-
     if (m_Vertices.size() + VertexCount > MaxVertices || m_Indices.size() + IndexCount > MaxIndices)
     {
       Flush();
@@ -130,6 +131,7 @@ namespace PicoEngine
       m_Vertices.push_back({{transformed.x, transformed.y, transformed.z}, color, texCoords[i], 0.0f});
     }
     m_Indices.insert(m_Indices.end(), {offset + 0, offset + 1, offset + 2, offset + 2, offset + 3, offset + 0});
+    s_Stats.QuadCount++;
   }
 
   void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const SubTexture2D &subTexture)
@@ -182,6 +184,7 @@ namespace PicoEngine
 
     m_Indices.insert(m_Indices.end(), {offset + 0, offset + 1, offset + 2,
                                        offset + 2, offset + 3, offset + 0});
+    s_Stats.QuadCount++;
   }
 
   void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Texture &texture)
@@ -234,6 +237,17 @@ namespace PicoEngine
     }
     m_Indices.insert(m_Indices.end(), {offset + 0, offset + 1, offset + 2,
                                        offset + 2, offset + 3, offset + 0});
+    s_Stats.QuadCount++;
+  }
+
+  Renderer2D::Statistics Renderer2D::GetStats()
+  {
+    return s_Stats;
+  }
+
+  void Renderer2D::ResetStats()
+  {
+    memset(&s_Stats, 0, sizeof(Renderer2D::Statistics));
   }
 
   // private
@@ -261,6 +275,7 @@ namespace PicoEngine
     m_Vertices.clear();
     m_Indices.clear();
     m_TextureSlotIndex = 1;
+    s_Stats.DrawCalls++;
   }
 
   float Renderer2D::GetTextureIndex(const Texture &texture)

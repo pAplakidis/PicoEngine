@@ -122,26 +122,32 @@ public:
 
   void OnRender() override
   {
-    m_Renderer2D.BeginScene(m_CameraController.GetCamera());
+    // Reset stats
+    PicoEngine::Renderer2D::ResetStats();
 
     PicoEngine::RendererCommand::SetClearColor(0.36f, 0.67f, 1.0f, 1.0f);
     PicoEngine::RendererCommand::Clear();
 
+    m_Renderer2D.BeginScene(m_CameraController.GetCamera());
     m_TileMap.Render(m_Renderer2D, m_TileSet); // TODO: this should be inside Scene
     m_Scene.Render(m_Renderer2D);
-
     m_Renderer2D.EndScene();
+
+    // TODO: move to ImGui
+    auto stats = PicoEngine::Renderer2D::GetStats();
+    LOG_INFO("[Stats] DrawCalls {}", stats.DrawCalls);
   }
 
   // FIXME: segfaults due to ImGui not being initialized yet, but this is the correct way to do it
   // TODO: implement Renderer2D stats
   // void OnImGuiRender() override
   // {
+  //   auto stats = PicoEngine::Renderer2D::GetStats();
   //   ImGui::Begin("Renderer2D Stats"); // TODO: this should be in the ImGuiLayer, not here
-  //   ImGui::Text("Draw calls: %u", PicoEngine::Renderer2D::GetDrawCallCount());
-  //   ImGui::Text("Quads submitted: %u", PicoEngine::Renderer2D::GetQuadCount());
-  //   ImGui::Text("Vertices submitted: %u", PicoEngine::Renderer2D::GetVertexCount());
-  //   ImGui::Text("Indices submitted: %u", PicoEngine::Renderer2D::GetIndexCount());
+  //   ImGui::Text("Draw calls: %u", stats.DrawCalls);
+  //   ImGui::Text("Quad Count: %u", stats.QuadCount );
+  //   ImGui::Text("Vertices submitted: %u", stats.GetTotalVertexCount());
+  //   ImGui::Text("Indices submitted: %u", stats.GetTotalIndexCount());
   //   ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
   //   ImGui::End();
   // }
