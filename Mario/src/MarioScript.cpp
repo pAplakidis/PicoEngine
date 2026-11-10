@@ -6,9 +6,6 @@
 
 void MarioScript::Setup(PicoEngine::Entity entity)
 {
-
-  auto &transform = entity.GetComponent<PicoEngine::TransformComponent>();
-  transform.SetPosition({0.0f, 2.0f, 0.0f});
 }
 
 void MarioScript::Loop(PicoEngine::Entity entity, float deltaTime)

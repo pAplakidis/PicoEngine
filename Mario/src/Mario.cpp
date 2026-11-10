@@ -171,6 +171,9 @@ public:
     m_Mario = m_Scene.CreateEntity("Mario");
     m_Mario.AddComponent<PicoEngine::SpriteRendererComponent>(m_MarioSmallFrames[0]);
 
+    auto &transform = m_Mario.GetComponent<PicoEngine::TransformComponent>();
+    transform.SetPosition({0.0f, 2.0f, 0.0f});
+
     auto &animator = m_Mario.AddComponent<PicoEngine::AnimatorComponent>();
     animator.AddAnimation("Idle", m_IdleAnimationClip);
     animator.AddAnimation("Walking", m_WalkingAnimationClip);
@@ -228,7 +231,6 @@ public:
 
     // Follow horizontally, with a fixed vertical camera position
     glm::vec3 targetPosition{playerPosition.x, 0.0f, 0.0f};
-
     const glm::vec3 currentPosition = m_CameraController.GetCamera().GetPosition();
 
     // Frame-rate independent camera smoothing
@@ -236,7 +238,6 @@ public:
     const float t = 1.0f - std::exp(-followSpeed * deltaTime);
 
     const glm::vec3 newPosition = glm::mix(currentPosition, targetPosition, t);
-
     m_CameraController.setPosition(newPosition);
   }
 
