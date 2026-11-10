@@ -2,6 +2,7 @@
 
 #include <imgui/imgui.h>
 #include <array>
+#include <cmath>
 
 #include "Core/src/Scene.h"
 #include "Core/src/Entity.h"
@@ -129,6 +130,8 @@ public:
     m_JumpingAnimationClip->AddFrame(m_MarioSmallFrames[4], 0.12f);
 
     m_CameraController.SetZoomLevel(10.0f);
+    m_CameraController.SetPanningEnabled(false);
+    m_CameraController.SetZoomingEnabled(false);
 
     // init world tiles
     // TODO: make collidable
@@ -165,17 +168,17 @@ public:
   void OnAttach() override
   {
     // Render player
-    PicoEngine::Entity mario = m_Scene.CreateEntity("Mario");
-    mario.AddComponent<PicoEngine::SpriteRendererComponent>(m_MarioSmallFrames[0]);
+    m_Mario = m_Scene.CreateEntity("Mario");
+    m_Mario.AddComponent<PicoEngine::SpriteRendererComponent>(m_MarioSmallFrames[0]);
 
-    auto &animator = mario.AddComponent<PicoEngine::AnimatorComponent>();
+    auto &animator = m_Mario.AddComponent<PicoEngine::AnimatorComponent>();
     animator.AddAnimation("Idle", m_IdleAnimationClip);
     animator.AddAnimation("Walking", m_WalkingAnimationClip);
     animator.AddAnimation("Jumping", m_JumpingAnimationClip);
     animator.Play("Idle");
 
     auto marioScript = std::make_shared<MarioScript>();
-    mario.AddComponent<PicoEngine::ScriptComponent>(
+    m_Mario.AddComponent<PicoEngine::ScriptComponent>(
         [marioScript](PicoEngine::Entity entity)
         {
           marioScript->Setup(entity);
@@ -205,15 +208,36 @@ public:
     // Create enemies
   }
 
-  void
-  OnDetach() override
+  void OnDetach() override
   {
   }
 
   void OnUpdate(float deltaTime) override
   {
-    m_CameraController.OnUpdate(deltaTime);
     m_Scene.OnUpdate(deltaTime);
+
+    m_CameraController.OnUpdate(deltaTime);
+
+    if (!m_Mario)
+      return;
+
+    // TODO: CameraEntity(TransformComponent, CameraComponent, CameraFollowComponent) => CameraSystem(Find target entity, calculate follow position, smooth, clamp bounds) => OrthographicCamer(ProjMatrix, ViewMatrix)
+    // Follow Mario with the camera
+    auto &transform = m_Mario.GetComponent<PicoEngine::TransformComponent>();
+    const glm::vec3 playerPosition = transform.GetPosition();
+
+    // Follow horizontally, with a fixed vertical camera position
+    glm::vec3 targetPosition{playerPosition.x, 0.0f, 0.0f};
+
+    const glm::vec3 currentPosition = m_CameraController.GetCamera().GetPosition();
+
+    // Frame-rate independent camera smoothing
+    constexpr float followSpeed = 8.0f;
+    const float t = 1.0f - std::exp(-followSpeed * deltaTime);
+
+    const glm::vec3 newPosition = glm::mix(currentPosition, targetPosition, t);
+
+    m_CameraController.setPosition(newPosition);
   }
 
   void OnRender() override
@@ -257,6 +281,8 @@ private:
   PicoEngine::Renderer2D &m_Renderer2D;
   PicoEngine::Scene m_Scene;
   PicoEngine::OrthographicCameraController m_CameraController;
+
+  PicoEngine::Entity m_Mario;
 
   // TODO: do they have to be shared_ptr? or can they be unique_ptr? or not pointers at all?
   // better to be on the stack since they are sheets

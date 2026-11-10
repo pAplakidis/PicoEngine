@@ -20,6 +20,9 @@ namespace PicoEngine
 
   void OrthographicCameraController::OnUpdate(float deltaTime)
   {
+    if (!m_PanningEnabled)
+      return;
+
     glm::vec2 mousePosition{
         Input::GetMouseX(),
         Input::GetMouseY()};
@@ -75,12 +78,16 @@ namespace PicoEngine
 
   void OrthographicCameraController::SetZoomLevel(float zoomLevel)
   {
+    if (!m_ZoomingEnabled)
+      return;
     m_ZoomLevel = zoomLevel;
     RecalculateProjection();
   }
 
   bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent &event)
   {
+    if (!m_ZoomingEnabled)
+      return false;
     m_ZoomLevel -= event.GetYOffset() * 0.25f;
     m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
     RecalculateProjection();
