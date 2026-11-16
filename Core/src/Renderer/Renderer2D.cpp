@@ -149,7 +149,7 @@ namespace PicoEngine
     DrawQuad(transform, subTexture);
   }
 
-  void Renderer2D::DrawQuad(const glm::mat4 &transform, const SubTexture2D &subTexture)
+  void Renderer2D::DrawQuad(const glm::mat4 &transform, const SubTexture2D &subTexture, bool flipX, bool flipY)
   {
     constexpr uint32_t VertexCount = 4;
     constexpr uint32_t IndexCount = 6;
@@ -174,11 +174,19 @@ namespace PicoEngine
 
     for (int i = 0; i < 4; i++)
     {
+      // Remap the UV corner rather than transforming the quad.
+      int uvIndex = i;
+
+      if (flipX)
+        uvIndex = (uvIndex == 0 || uvIndex == 3) ? (uvIndex == 0 ? 1 : 2) : (uvIndex == 1 ? 0 : 3);
+      if (flipY)
+        uvIndex = (uvIndex == 0 || uvIndex == 1) ? (uvIndex == 0 ? 3 : 2) : (uvIndex == 2 ? 1 : 0);
+
       glm::vec4 transformed = transform * localPositions[i];
 
       m_Vertices.push_back({{transformed.x, transformed.y, transformed.z},
                             Vec4{1.0f, 1.0f, 1.0f, 1.0f},
-                            texCoords[i],
+                            texCoords[uvIndex],
                             textureIndex});
     }
 
@@ -238,6 +246,17 @@ namespace PicoEngine
     m_Indices.insert(m_Indices.end(), {offset + 0, offset + 1, offset + 2,
                                        offset + 2, offset + 3, offset + 0});
     s_Stats.QuadCount++;
+  }
+
+  void Renderer2D::DrawAABB(const AABB &aabb, const Vec4 &color)
+  {
+    const glm::vec2 center = aabb.GetCenter();
+    const glm::vec2 size = aabb.GetSize();
+    constexpr float thickness = 0.025f;
+    DrawQuad({center.x, aabb.max.y}, {size.x, thickness}, color); // Top edge
+    DrawQuad({center.x, aabb.min.y}, {size.x, thickness}, color); // Bottom edge
+    DrawQuad({aabb.min.x, center.y}, {thickness, size.y}, color); // Left edge
+    DrawQuad({aabb.max.x, center.y}, {thickness, size.y}, color); // Right edge
   }
 
   Renderer2D::Statistics Renderer2D::GetStats()

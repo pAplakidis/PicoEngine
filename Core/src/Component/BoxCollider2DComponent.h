@@ -7,6 +7,15 @@ namespace PicoEngine
   class BoxCollider2DComponent
   {
   public:
+    BoxCollider2DComponent() = default;
+
+    BoxCollider2DComponent(const glm::vec2 &size, bool isTrigger = false, const glm::vec2 &offset = {0.0f, 0.0f})
+        : m_Offset(offset),
+          m_Size(size),
+          m_IsTrigger(isTrigger)
+    {
+    }
+
     glm::vec2 GetOffset() const { return m_Offset; }
     glm::vec2 GetSize() const { return m_Size; }
     bool IsTrigger() const { return m_IsTrigger; }

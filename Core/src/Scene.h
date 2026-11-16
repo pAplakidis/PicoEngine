@@ -5,7 +5,10 @@
 
 #include "Entity.h"
 #include "Renderer/Renderer2D.h"
+#include "Renderer/RendererDebugSettings.h"
+
 #include "Systems/AnimationSystem.h"
+#include "Systems/CollisionSystem2D.h"
 
 namespace PicoEngine
 {
@@ -28,10 +31,15 @@ namespace PicoEngine
     void OnUpdate(float deltaTime);
     void Render(Renderer2D &renderer2D);
 
+    void RenderCollisionDebug(Renderer2D &renderer, const RendererDebugSettings &settings);
+
+    AnimationSystem &GetAnimationSystem() { return m_AnimationSystem; }
+    CollisionSystem2D &GetCollisionSystem() { return m_CollisionSystem; }
+
   private:
     entt::registry m_Registry;
     AnimationSystem m_AnimationSystem;
-
+    CollisionSystem2D m_CollisionSystem;
     friend class Entity;
   };
 

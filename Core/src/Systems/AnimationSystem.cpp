@@ -4,19 +4,17 @@
 
 #include "Component/AnimatorComponent.h"
 #include "Component/SpriteRendererComponent.h"
-#include "Component/TransformComponent.h"
 
 namespace PicoEngine
 {
   void AnimationSystem::Update(entt::registry &registry, float deltaTime)
   {
-    auto view = registry.view<AnimatorComponent, SpriteRendererComponent, TransformComponent>();
+    auto view = registry.view<AnimatorComponent, SpriteRendererComponent>();
 
     for (auto entity : view)
     {
       auto &animator = view.get<AnimatorComponent>(entity);
       auto &sprite = view.get<SpriteRendererComponent>(entity);
-      auto &transform = view.get<TransformComponent>(entity);
 
       // Find the current clip
       auto it = animator.m_Animations.find(animator.m_CurrentAnimation);
@@ -76,12 +74,7 @@ namespace PicoEngine
       if (sprite.GetSubTexture() != frame.Frame)
         sprite.SetSubTexture(frame.Frame);
 
-      // Temporary mirroring through TransformComponent.
-      glm::vec3 scale = transform.GetScale();
-      const float absoluteX = std::abs(scale.x);
-
-      scale.x = animator.m_IsFlippedX ? -absoluteX : absoluteX;
-      transform.SetScale(scale);
+      sprite.SetFlipX(animator.m_IsFlippedX);
     }
   }
 }

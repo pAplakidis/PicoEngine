@@ -16,11 +16,13 @@
 #include "Core/src/Component/TransformComponent.h"
 #include "Core/src/Component/ScriptComponent.h"
 #include "Core/src/Component/AnimatorComponent.h"
+#include "Core/src/Component/BoxCollider2DComponent.h"
 
 #include "Core/src/Renderer/Renderer.h"
 #include "Core/src/Renderer/Renderer2D.h"
 #include "Core/src/Renderer/RendererCommand.h"
 #include "Core/src/Renderer/GL/Texture.h"
+#include "Core/src/Renderer/RendererDebugSettings.h"
 
 #include "Core/src/Asssets/AnimationClip.h"
 
@@ -172,7 +174,10 @@ public:
     m_Mario.AddComponent<PicoEngine::SpriteRendererComponent>(m_MarioSmallFrames[0]);
 
     auto &transform = m_Mario.GetComponent<PicoEngine::TransformComponent>();
-    transform.SetPosition({0.0f, 2.0f, 0.0f});
+    // transform.SetPosition({0.0f, 2.0f, 0.0f});
+    transform.SetPosition({5.0f, 2.0f, 0.0f});
+
+    m_Mario.AddComponent<PicoEngine::BoxCollider2DComponent>(glm::vec2{1.0f, 1.0f}, false);
 
     auto &animator = m_Mario.AddComponent<PicoEngine::AnimatorComponent>();
     animator.AddAnimation("Idle", m_IdleAnimationClip);
@@ -206,6 +211,12 @@ public:
     //   }
     // };
 
+    auto block = m_Scene.CreateEntity("CollisionTestBlock");
+    auto &blockTransform = block.GetComponent<PicoEngine::TransformComponent>();
+    blockTransform.SetPosition({3.0f, 2.0f, 0.0f});
+    block.AddComponent<PicoEngine::BoxCollider2DComponent>();
+    block.AddComponent<PicoEngine::SpriteRendererComponent>(PicoEngine::SubTexture2D::CreateFromCoords(m_WorldSpriteSheet, {1, 0}, {16.0f, 16.0f}));
+
     // Create map (TODO: add tilemap to Scene init, not game init)
 
     // Create enemies
@@ -218,6 +229,15 @@ public:
   void OnUpdate(float deltaTime) override
   {
     m_Scene.OnUpdate(deltaTime);
+
+    const auto &contacts = m_Scene.GetCollisionSystem().GetContacts();
+    for (const auto &contact : contacts)
+    {
+      if (contact.Manifold.IsColliding)
+      {
+        LOG_TRACE("Collision: Normal ({}, {}), Penetration {}", contact.Manifold.Normal.x, contact.Manifold.Normal.y, contact.Manifold.Penetration);
+      }
+    }
 
     m_CameraController.OnUpdate(deltaTime);
 
@@ -250,8 +270,11 @@ public:
     PicoEngine::RendererCommand::Clear();
 
     m_Renderer2D.BeginScene(m_CameraController.GetCamera());
+
     m_TileMap.Render(m_Renderer2D, m_TileSet); // TODO: this should be inside Scene
     m_Scene.Render(m_Renderer2D);
+    m_Scene.RenderCollisionDebug(m_Renderer2D, m_DebugSettings);
+
     m_Renderer2D.EndScene();
 
     // TODO: move to ImGui
@@ -280,6 +303,12 @@ public:
 
 private:
   PicoEngine::Renderer2D &m_Renderer2D;
+  // // TODO: after ImGUI is fixed:
+  // ImGui::Checkbox("Show Colliders", &m_DebugSettings.ShowColliders);
+  // ImGui::Checkbox("Show Collision Contacts", &m_DebugSettings.ShowCollisionContacts);
+  // ImGui::Checkbox("Show Contact Normals", &m_DebugSettings.ShowContactNormals);
+  PicoEngine::RendererDebugSettings m_DebugSettings{.ShowColliders = true, .ShowCollisionContacts = true, .ShowContactNormals = true};
+
   PicoEngine::Scene m_Scene;
   PicoEngine::OrthographicCameraController m_CameraController;
 

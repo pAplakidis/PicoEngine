@@ -38,6 +38,12 @@ namespace PicoEngine
     glm::vec4 GetColor() { return m_Color; }
     void SetColor(const glm::vec4 &color) { m_Color = color; }
 
+    void SetFlipX(bool flip) { m_FlipX = flip; }
+    bool GetFlipX() const { return m_FlipX; }
+
+    void SetFlipY(bool flip) { m_FlipY = flip; }
+    bool GetFlipY() const { return m_FlipY; }
+
   private:
     std::shared_ptr<Texture> m_Texture;
     std::shared_ptr<SubTexture2D> m_SubTexture;
@@ -45,5 +51,8 @@ namespace PicoEngine
 
     glm::vec2 UVMin{0.0f, 0.0f};
     glm::vec2 UVMax{1.0f, 1.0f};
+
+    bool m_FlipX = false;
+    bool m_FlipY = false;
   };
 }

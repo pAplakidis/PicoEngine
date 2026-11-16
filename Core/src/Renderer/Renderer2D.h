@@ -15,6 +15,7 @@
 #include "GL/Texture.h"
 #include "GL/SubTexture2D.h"
 #include "Camera/OrthographicCamera.h"
+#include "Physics/AABB.h"
 
 namespace PicoEngine
 {
@@ -38,11 +39,13 @@ namespace PicoEngine
 
     void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const SubTexture2D &subTexture);
     void DrawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &size, const SubTexture2D &subTexture);
-    void DrawQuad(const glm::mat4 &transform, const SubTexture2D &subTexture);
+    void DrawQuad(const glm::mat4 &transform, const SubTexture2D &subTexture, bool flipX = false, bool flipY = false); // TODO: might need to do this to Texture version as well
 
     void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const Texture &texture);
     void DrawQuad(const glm::vec2 &position, float rotation, const glm::vec2 &size, const Texture &texture);
     void DrawQuad(const glm::mat4 &transform, const Texture &texture);
+
+    void DrawAABB(const AABB &aabb, const Vec4 &color);
 
     static constexpr uint32_t GetMaxQuads() { return MaxQuads; }
 
