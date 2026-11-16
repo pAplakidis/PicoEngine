@@ -14,6 +14,7 @@
 #include "tests/TestTexture2D.h"
 #include "tests/TestTransformations.h"
 #include "tests/TestTriangle.h"
+#include "tests/TestAABBCollision.h"
 
 class SandboxLayer : public PicoEngine::Layer
 {
@@ -43,6 +44,7 @@ public:
     m_TestMenu->RegisterTest<test::TestTriangle>("Triangle");
     m_TestMenu->RegisterTest<test::TestBatchRenderer2D>("2D Batch Stress Test");
     m_TestMenu->RegisterTest<test::TestTransformations>("Transformations Test");
+    m_TestMenu->RegisterTest<test::TestAABBCollision>("AABB Collision Test");
   }
 
   void OnDetach() override

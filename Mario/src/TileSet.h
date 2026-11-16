@@ -5,22 +5,37 @@
 
 #include "Core/src/Renderer/GL/SubTexture2D.h"
 
+// TODO: move to engine
+
+enum class TileCollisionType
+{
+  None,
+  Solid,
+  OneWay
+};
+
+struct TileDefinition
+{
+  std::shared_ptr<PicoEngine::SubTexture2D> texture;
+  TileCollisionType collisionType = TileCollisionType::None;
+};
+
 enum class TileType
 {
   Empty,
 
   // Ground
-  GroundTop,
-  GroundFill,
-  GroundLeft,
-  GroundRight,
+  GroundTop,   // solid collider
+  GroundFill,  // sollid collider
+  GroundLeft,  // solid collider
+  GroundRight, // solid collider
 
   // Blocks
-  Brick,
-  QuestionBlock,
-  UsedBlock,
-  SolidBlock,
-  HiddenBlock,
+  Brick,         // solid collider
+  QuestionBlock, // solid collider
+  UsedBlock,     // solid collider
+  SolidBlock,    // solid collider
+  HiddenBlock,   // solid collider
 
   // Pipes
   PipeTopLeft,
@@ -29,8 +44,8 @@ enum class TileType
   PipeBodyRight,
 
   // Stairs / platforms
-  StairBlock,
-  Platform,
+  StairBlock, // solid collider
+  Platform,   // OneWay collider
 
   // Decorations / level structures
   FlagPole,

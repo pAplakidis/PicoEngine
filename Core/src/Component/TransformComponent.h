@@ -8,9 +8,9 @@ namespace PicoEngine
   class TransformComponent
   {
   public:
-    glm::vec3 GetPosition() { return m_Position; }
-    float GetRotation() { return m_Rotation; }
-    glm::vec3 GetScale() { return m_Scale; }
+    const glm::vec3 GetPosition() const { return m_Position; }
+    float GetRotation() const { return m_Rotation; }
+    glm::vec3 GetScale() const { return m_Scale; }
 
     glm::mat4 GetTransform() const
     {
