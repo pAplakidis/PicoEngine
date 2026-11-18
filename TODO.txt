@@ -1,21 +1,31 @@
-TODO
+TODO:
+- TileMap collision
+- Basic Physics
+- Mario Jump
+- Make a Mario game
+
+Backlog:
+- python scripting
+- particle system
 - use PicoEngine namespace everywhere in Core
+- import everyting in PicoEngine.h (so that we only import that in Application)
 - move renderer stuff to the stack (?)
+- CaptainClaw clone
+
+Done:
+- Batch Rendering
+- Replace all Renderer with Renderer2D
+- Logger
+- Replace GLCall with glEnableDebug()
+- Wireframe mode
+- Camera
+- Proper resizing
+- Window and Application classes
+- Layers
 - Scene
 - Entity
 - Texture atlas
 - Components (Sprite, Transform, Rigidbody, BoxCollider, Animation (?), etc)
-- Make a Mario game
-- CaptainClaw clone
-
-Cleanup:
-- Layers
-
-- Batch Rendering (DONE)
-- Replace all Renderer with Renderer2D (DONE)
-- Logger (DONE)
-- Replace GLCall with glEnableDebug() (DONE)
-- Wireframe mode (DONE)
-- Camera (DONE)
-- Proper resizing (DONE)
-- Window and Application classes (DONE)
+- Setup/Loop entity scripting
+- Collision Detection
+- Blocking Collision
