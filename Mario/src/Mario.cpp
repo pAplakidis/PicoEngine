@@ -17,6 +17,7 @@
 #include "Core/src/Component/ScriptComponent.h"
 #include "Core/src/Component/AnimatorComponent.h"
 #include "Core/src/Component/BoxCollider2DComponent.h"
+#include "Core/src/Component/RigidBody2DComponent.h"
 
 #include "Core/src/Renderer/Renderer.h"
 #include "Core/src/Renderer/Renderer2D.h"
@@ -178,6 +179,7 @@ public:
     transform.SetPosition({5.0f, 2.0f, 0.0f});
 
     m_Mario.AddComponent<PicoEngine::BoxCollider2DComponent>(glm::vec2{1.0f, 1.0f}, false);
+    m_Mario.AddComponent<PicoEngine::RigidBody2DComponent>(PicoEngine::BodyType::Dynamic);
 
     auto &animator = m_Mario.AddComponent<PicoEngine::AnimatorComponent>();
     animator.AddAnimation("Idle", m_IdleAnimationClip);

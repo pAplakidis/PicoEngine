@@ -16,4 +16,13 @@ namespace PicoEngine
   };
 
   CollisionManifold2D TestAABB(const AABB &a, const AABB &b, float epsilon);
+
+  struct SweepResult2D
+  {
+    bool Hit = false;
+    float Time = 1.0f; // Normalized fraction of movement [0, 1]
+    glm::vec2 Normal{0.0f};
+  };
+
+  SweepResult2D SweepAABB(const AABB &moving, const AABB &stationary, const glm::vec2 displacement);
 }

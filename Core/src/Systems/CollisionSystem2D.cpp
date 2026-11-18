@@ -2,6 +2,7 @@
 
 #include "Component/TransformComponent.h"
 #include "Component/BoxCollider2DComponent.h"
+#include "Component/RigidBody2DComponent.h"
 
 #include "Physics/AABB.h"
 #include "Physics/Collision2D.h"
@@ -58,5 +59,57 @@ namespace PicoEngine
         m_Contacts.push_back(contact);
       }
     }
+  }
+
+  SweepResult2D CollisionSystem2D::SweepStatic(entt::registry &registry, entt::entity movingEntity, const glm::vec2 &displacement) const
+  {
+    SweepResult2D closestHit;
+
+    // retrieve the moving collider
+    const auto &transform = registry.get<TransformComponent>(movingEntity);
+    const auto &collider = registry.get<BoxCollider2DComponent>(movingEntity);
+
+    // triggers do not participate in blocking.
+    if (collider.IsTrigger())
+      return closestHit;
+
+    const AABB movingBounds = CalculateAABB(transform, collider);
+
+    auto view = registry.view<TransformComponent, BoxCollider2DComponent>();
+
+    for (auto otherEntity : view)
+    {
+      // never collide with ourselves
+      if (otherEntity == movingEntity)
+        continue;
+
+      const auto &otherCollider = view.get<BoxCollider2DComponent>(otherEntity);
+      if (otherCollider.IsTrigger())
+        continue;
+
+      // a collider without a rigid body is static
+      const auto &otherBody = registry.try_get<RigidBody2DComponent>(otherEntity);
+      if (otherBody && otherBody->GetBodyType() != BodyType::Static)
+        continue;
+
+      const auto &otherTransform = view.get<TransformComponent>(otherEntity);
+      const AABB obstacleBounds = CalculateAABB(otherTransform, otherCollider);
+
+      // reuse the pure geometric collision test
+      const SweepResult2D hit = SweepAABB(movingBounds, obstacleBounds, displacement);
+
+      // keep the earliest collision along the path
+      if (!hit.Hit)
+        continue;
+
+      // A blocking collision must oppose the attempted movement.
+      if (glm::dot(displacement, hit.Normal) >= 0.0f)
+        continue;
+
+      if (!closestHit.Hit || hit.Time < closestHit.Time)
+        closestHit = hit;
+    }
+
+    return closestHit;
   }
 }

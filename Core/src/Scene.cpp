@@ -44,6 +44,7 @@ namespace PicoEngine
     }
 
     // Update scene-wide systems once per frame
+    m_PhysicsWorld.Update(m_Registry, m_CollisionSystem, deltaTime); // TODO: advance physics in fixed 60 Hz steps (might be affected by FPS?)
     m_AnimationSystem.Update(m_Registry, deltaTime);
     m_CollisionSystem.Update(m_Registry);
   }

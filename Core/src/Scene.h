@@ -9,6 +9,7 @@
 
 #include "Systems/AnimationSystem.h"
 #include "Systems/CollisionSystem2D.h"
+#include "Physics/PhysicsWorld2D.h"
 
 namespace PicoEngine
 {
@@ -35,10 +36,12 @@ namespace PicoEngine
 
     AnimationSystem &GetAnimationSystem() { return m_AnimationSystem; }
     CollisionSystem2D &GetCollisionSystem() { return m_CollisionSystem; }
+    PhysicsWorld2D GetPhysicsWorld() { return m_PhysicsWorld; }
 
   private:
     entt::registry m_Registry;
     AnimationSystem m_AnimationSystem;
+    PhysicsWorld2D m_PhysicsWorld;
     CollisionSystem2D m_CollisionSystem;
     friend class Entity;
   };
